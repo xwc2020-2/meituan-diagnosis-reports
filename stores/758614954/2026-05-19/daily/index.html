@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>门店数据运营诊断 · 超能玩家包间电玩switch·PS5游戏馆（新街口文化大厦店）</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #1f2328; background: #f6f8fa; line-height: 1.6; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 20px 16px 64px; }
+
+  /* Header — compact, one line of context */
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; margin-bottom: 18px; }
+  header h1 { font-size: 19px; margin: 0; }
+  header .ctx { color: #656d76; font-size: 13px; }
+  .grade-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+    font-weight: 600; color: #fff; padding: 2px 9px; border-radius: 999px; }
+
+  /* Credibility strip — visible (not collapsed) whenever the grade is not A */
+  .cred-strip { border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+    font-size: 13px; display: flex; gap: 8px; align-items: baseline; }
+  .cred-strip.c { background: #ffebe9; border: 1px solid #ffcecb; color: #82071e; }
+  .cred-strip.b { background: #fff8e6; border: 1px solid #f0d98a; color: #7a5c00; }
+  .cred-strip strong { white-space: normal; }
+
+  /* Hero — the single focal point */
+  .hero { background: #fff; border: 1px solid #d0d7de; border-left: 5px solid #cf222e;
+    border-radius: 12px; padding: 22px 24px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+  .hero-tag { display: inline-block; background: #cf222e; color: #fff; font-size: 12px;
+    font-weight: 700; padding: 3px 10px; border-radius: 6px; letter-spacing: .5px; }
+  .hero h2 { font-size: 24px; margin: 12px 0 4px; }
+  .hero .sub { color: #656d76; font-size: 13px; margin: 0 0 16px; }
+  .compare { margin: 14px 0; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; }
+  .bar-label { width: 64px; color: #656d76; flex-shrink: 0; }
+  .bar { flex: 1; height: 18px; background: #eef1f4; border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-fill.own { background: #cf222e; }
+  .bar-fill.peer { background: #8b949e; }
+  .bar-val { width: 64px; text-align: right; font-variant-numeric: tabular-nums;
+    font-weight: 600; flex-shrink: 0; }
+  .opp { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    margin: 18px 0 10px; padding: 16px 18px; background: #ddf4e4; border-radius: 10px; }
+  .opp .big { font-size: 42px; font-weight: 800; color: #1a7f37; line-height: 1;
+    font-variant-numeric: tabular-nums; }
+  .opp .unit { font-size: 16px; font-weight: 600; color: #1a7f37; }
+  .opp .desc { font-size: 13px; color: #4a6a52; margin-left: auto; text-align: right; }
+  .hero .keepout { font-size: 13px; color: #424a53; margin: 6px 0 0;
+    padding: 8px 12px; background: #f6f8fa; border-radius: 6px; }
+
+  /* This week's actions */
+  .block-title { font-size: 16px; margin: 26px 0 12px; display: flex; align-items: baseline; gap: 8px; }
+  .block-title .count { font-size: 13px; color: #8b949e; font-weight: 400; }
+  .action { background: #fff; border: 1px solid #d0d7de; border-left: 4px solid #cf222e;
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .action.draft { border-left-color: #bf8700; }
+  .action .num { display: inline-block; width: 22px; height: 22px; background: #1f2328;
+    color: #fff; border-radius: 50%; text-align: center; line-height: 22px; font-size: 12px;
+    font-weight: 700; margin-right: 6px; }
+  .action .title { font-weight: 600; font-size: 14px; }
+  .action .row { font-size: 13px; margin: 5px 0 0; padding-left: 28px; }
+  .action .k { color: #8b949e; }
+  .action .mode { font-size: 11px; color: #adb5bd; margin: 8px 0 0; padding-left: 28px; }
+
+  /* Collapsible supporting detail */
+  details { background: #fff; border: 1px solid #d0d7de; border-radius: 10px;
+    margin-top: 10px; overflow: hidden; }
+  details > summary { cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 14px;
+    list-style: none; display: flex; align-items: center; gap: 8px; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸"; color: #8b949e; transition: transform .15s; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  details > summary .meta { color: #8b949e; font-weight: 400; font-size: 12px; margin-left: auto; }
+  .details-body { padding: 4px 16px 16px; overflow-x: auto; max-width: 100%; }
+  .table-scroll { overflow-x: auto; margin-top: 8px; }
+  .table-scroll table { min-width: 1080px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eaeef2; vertical-align: top; }
+  th { background: #f6f8fa; font-weight: 600; color: #424a53; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  .stage-leak td { background: #fff1f0; font-weight: 600; }
+  .metric-with-def { border-bottom: 1px dotted #adb5bd; cursor: help; }
+  .def-mark { color: #8b949e; font-size: 11px; vertical-align: super; }
+  td.metric-name { white-space: nowrap; color: #424a53; }
+  .grade-pill, .grade-chip { display: inline-block; padding: 1px 6px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; color: #fff; }
+  .grade-chip { margin-right: 4px; }
+  .grade-pill.grade-s, .grade-chip.grade-s { background: #1a7f37; }
+  .grade-pill.grade-a, .grade-chip.grade-a { background: #218bff; }
+  .grade-pill.grade-b, .grade-chip.grade-b { background: #8b949e; }
+  .grade-pill.grade-c, .grade-chip.grade-c { background: #bf8700; }
+  .grade-pill.grade-d, .grade-chip.grade-d { background: #cf222e; }
+  tr.grade-row.grade-d td, tr.grade-row.grade-c td { background: #fff8f4; }
+  .official-quotes { margin: 6px 0 0 0; padding: 6px 10px 6px 22px;
+    background: #f6f8fa; border-left: 3px solid #d0d7de; font-size: 11.5px;
+    color: #656d76; list-style: '“ ' outside; }
+  .official-quotes li { margin: 2px 0; }
+  .official-quotes strong { color: #424a53; font-weight: 600; margin-right: 4px; }
+  .source-chip { display: inline-block; padding: 1px 6px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; background: #ddf4ff; color: #0969da;
+    margin-left: 4px; vertical-align: middle; }
+  .issue-meituan-grade { background: #fbfdff; }
+  .recommended-actions { margin: 6px 0 0; padding: 6px 10px 6px 22px;
+    background: #f0f7ff; border-left: 3px solid #0969da; font-size: 12px;
+    color: #1f2328; }
+  .recommended-actions li { margin: 2px 0; line-height: 1.55; }
+  .recommended-actions li.ra-header { font-weight: 700; color: #0550ae;
+    list-style: none; margin-left: -14px; margin-bottom: 4px; }
+
+  .issue { border-bottom: 1px solid #eaeef2; padding: 10px 0; }
+  .issue:last-child { border-bottom: none; }
+  .issue .head { font-size: 13px; font-weight: 600; }
+  .issue .root { font-size: 12.5px; color: #656d76; margin-top: 2px; }
+  .badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px;
+    font-weight: 700; color: #fff; margin-right: 4px; }
+  .p1 { background: #cf222e; } .p2 { background: #bf8700; } .p3 { background: #656d76; }
+  .ok { background: #1a7f37; }
+  .findings { margin: 0; padding-left: 18px; font-size: 12.5px; }
+  .findings li { margin: 3px 0; }
+  .sev-error { color: #cf222e; font-weight: 700; }
+  .sev-warn { color: #bf8700; font-weight: 700; }
+  .sev-info { color: #8b949e; }
+  .muted { color: #8b949e; }
+  footer { margin-top: 28px; font-size: 12px; color: #adb5bd; text-align: center; line-height: 1.7; }
+  @media (max-width: 600px) {
+    .opp .big { font-size: 34px; } .opp .desc { margin-left: 0; text-align: left; }
+    .hero h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>门店数据运营诊断</h1>
+  <span class="ctx">超能玩家包间电玩switch·PS5游戏馆（新街口文化大厦店） · 日监控 · 数据截止 2026-05-19</span>
+  <span class="grade-chip" style="background:#bf8700;">
+    数据可信度 B 级
+  </span>
+</header>
+
+<div class="cred-strip b">
+  <strong>⚠ B 级 · 部分结论需复核（数据完整性 B 级 / 证据覆盖率 A 级）</strong>
+  <span>1 项警告影响部分结论，明细见底部「数据可信度明细」。</span>
+</div>
+<section class="hero">
+  <div class="hero-tag">本周第一优先级</div>
+  <h2>主漏点：曝光→访问</h2>
+  <p class="sub">10 万曝光、近 7000 访问都正常带进来了，问题卡在这一步 — 转化率只有同行的 88%。 近7天下滑至 6.95%（环比 -7%），立即排查近一周变化。</p>
+  <div class="compare">
+    <div class="bar-row">
+      <span class="bar-label">本店</span>
+      <div class="bar"><div class="bar-fill own" style="width:88%;"></div></div>
+      <span class="bar-val">6.95%</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">同行均值</span>
+      <div class="bar"><div class="bar-fill peer" style="width:100%;"></div></div>
+      <span class="bar-val">7.90%</span>
+    </div>
+  </div>
+  <div class="opp">
+    <span class="big">+12</span>
+    <span class="unit">单 / 月</span>
+    <span class="desc">把这一步追到同行均值的增量<br>近30天 82 → 约 94（+15%）</span>
+  </div>
+  
+</section>
+
+<div class="block-title">本周要做的事 <span class="count">5 项，按优先级排序</span></div>
+<div class="action">
+  <div class="title"><span class="num">1</span>本周优先处理（1/3）：启动评价增长 标准流程：引导到店用户带图评价，商家逐条回复中差评，首屏露出最新好评。</div>
+  <div class="row"><span class="k">为什么：</span>本店「评价口碑」得分 50 vs 竞对均值 98（差 48 分），是「访问→意向」漏点的直接构成。</div>
+  <div class="row"><span class="k">竞对对标：</span>对标【WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）】（评价口碑 100/100）</div>
+  <div class="row"><span class="k">验收：</span>7 天后复盘 评价总数、带图评价占比与中差评回复率；目标向竞对均值收敛。</div>
+  <div class="mode">只读建议 · 创建待办 · 待执行</div>
+</div>
+<div class="action">
+  <div class="title"><span class="num">2</span>本周优先处理（2/3）：补齐门店详情页首屏信任要素：评分、评价数、榜单名次、认证标识、核心标签必须在首屏可见。</div>
+  <div class="row"><span class="k">为什么：</span>本店「信任背书」得分 50 vs 竞对均值 97（差 47 分），是「访问→意向」漏点的直接构成。</div>
+  <div class="row"><span class="k">竞对对标：</span>对标【WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）】（信任背书 100/100）</div>
+  <div class="row"><span class="k">验收：</span>7 天后复盘 访问→意向率与详情页停留时长；目标向竞对均值收敛。</div>
+  <div class="mode">只读建议 · 创建待办 · 待执行</div>
+</div>
+<div class="action">
+  <div class="title"><span class="num">3</span>本周优先处理（3/3）：重做搜索结果入口卡：首图换包间实拍，标题前置「人数+时长+价格锚点」，叠加可见的榜单或销量背书。</div>
+  <div class="row"><span class="k">为什么：</span>本店「曝光入口」得分 53 vs 竞对均值 99（差 46 分），是「访问→意向」漏点的直接构成。</div>
+  <div class="row"><span class="k">竞对对标：</span>对标【Take Two·游戏私影体验馆·Switch·PS5电玩（新街口店）】（曝光入口 100/100）</div>
+  <div class="row"><span class="k">验收：</span>7 天后复盘 曝光→访问率与头图点击率；目标向竞对均值收敛。</div>
+  <div class="mode">只读建议 · 创建待办 · 待执行</div>
+</div>
+<div class="action">
+  <div class="title"><span class="num">4</span>本周优先处理：替换入口首图</div>
+  <div class="row"><span class="k">为什么：</span>曝光→访问转化偏低，且入口视觉资产没有把包间、设备、氛围和多人场景讲清楚。</div>
+  
+  <div class="row"><span class="k">验收：</span>7 天后复盘：首图点击率、意向转化率、访问人数</div>
+  <div class="mode">只读建议 · 创建待办 · 待执行</div>
+</div>
+<div class="action draft">
+  <div class="title"><span class="num">5</span>本周排查：生成余额异常提醒</div>
+  <div class="row"><span class="k">为什么：</span>账户余额或投放状态异常会让日监控波动失真。</div>
+  
+  <div class="row"><span class="k">验收：</span>7 天后复盘：付费曝光、付费点击、日均花费</div>
+  <div class="mode">需人工确认 · 准备操作草稿 · 待执行</div>
+</div>
+
+<details>
+  <summary>漏斗拆解明细 <span class="meta">近7天</span></summary>
+  <div class="details-body">
+    <table>
+      <tr><th>环节</th><th class="num">用户量</th><th class="num">转化率</th><th class="num">同行均值</th><th class="num">达成度</th><th>状态</th></tr>
+      <tr class="">
+      <td><span class="metric-with-def" title="美团口径：访问人数/曝光人数">曝光→访问 <span class="def-mark">ⓘ</span></span></td>
+      <td class="num">15,000 → 1,031</td>
+      <td class="num">6.95%</td>
+      <td class="num">7.90%</td>
+      <td class="num">88%</td>
+      <td>偏弱</td>
+    </tr>
+    <tr class="stage-leak">
+      <td><span class="metric-with-def" title="美团口径：意向转化人数/访问人数">访问→意向转化 <span class="def-mark">ⓘ</span></span></td>
+      <td class="num">1,031 → 82</td>
+      <td class="num">7.95%</td>
+      <td class="num">16.81%</td>
+      <td class="num">47%</td>
+      <td>主漏点</td>
+    </tr>
+    </table>
+    <p class="muted" style="font-size:12px;margin-top:8px;">口径说明：本店留资与在线预约均为 0，按美团口径（意向转化=下单+留资+预约）意向转化人数等于下单人数，机会量化可直接读作订单增量。</p>
+  </div>
+</details>
+<details open>
+  <summary>商品全量校准矩阵 <span class="meta">15 个商品 · 13 个有成交 · 22 个字段</span></summary>
+  <div class="details-body">
+    <p class="muted" style="font-size:12px;">证据：。访问榜来自手机端商品页下滑截图；交易、核销、退款字段用同周期交易商品完整表校准；无成交商品保留访问数，交易字段为空。</p>
+    <p class="muted" style="font-size:12px;">手机镜像当前页对自动拖拽不稳定；本次保留重新下滑尝试截图，并以已存在的商品交易分布详情截图和官方 官方商品交易明细表 完整表进行逐商品校准。；第 14-15 个访问商品在近30天无成交表记录，因此交易/核销/退款字段为 空值，不按缺失处理。</p>
+    <div class="table-scroll">
+      <table>
+        <tr><th>商品</th><th class="num">访问人数</th><th class="num">访购率</th><th class="num">下单人数</th><th class="num">下单金额</th><th class="num">下单客单价</th><th class="num">核销人数</th><th class="num">核销金额</th><th class="num">核销客单价</th><th class="num">退款券数</th><th class="num">退款金额(原价)</th></tr>
+        <tr>
+      <td>2小时ps5双人包间｜情侣约会双人成行胡闹厨房switch</td>
+      <td class="num">763</td>
+      <td class="num">22.02%</td>
+      <td class="num">168</td>
+      <td class="num">¥15,600</td>
+      <td class="num">¥92.9</td>
+      <td class="num">157</td>
+      <td class="num">¥14,500</td>
+      <td class="num">¥92.4</td>
+      <td class="num">13</td>
+      <td class="num">¥1,664</td>
+    </tr>
+    <tr>
+      <td>3小时双人游戏包间 ｜ ps5/switch/xbox约会</td>
+      <td class="num">274</td>
+      <td class="num">24.45%</td>
+      <td class="num">67</td>
+      <td class="num">¥8,838</td>
+      <td class="num">¥131.9</td>
+      <td class="num">57</td>
+      <td class="num">¥7,515</td>
+      <td class="num">¥131.8</td>
+      <td class="num">8</td>
+      <td class="num">¥1,424</td>
+    </tr>
+    <tr>
+      <td>双人1小时私密包间 ｜ 躺玩PS5/switch丨超越网吧</td>
+      <td class="num">280</td>
+      <td class="num">22.86%</td>
+      <td class="num">64</td>
+      <td class="num">¥3,890</td>
+      <td class="num">¥60.8</td>
+      <td class="num">60</td>
+      <td class="num">¥3,666</td>
+      <td class="num">¥61.1</td>
+      <td class="num">4</td>
+      <td class="num">¥272</td>
+    </tr>
+    <tr>
+      <td>双人电玩特价大厅 1 小时丨超越网吧体验丨超高性价比丨配耳机</td>
+      <td class="num">205</td>
+      <td class="num">18.05%</td>
+      <td class="num">37</td>
+      <td class="num">¥1,449</td>
+      <td class="num">¥39.2</td>
+      <td class="num">35</td>
+      <td class="num">¥1,286</td>
+      <td class="num">¥36.7</td>
+      <td class="num">7</td>
+      <td class="num">¥203</td>
+    </tr>
+    <tr>
+      <td>2-4人聚会包间丨2小时双主机超值套餐丨闺蜜约会基友开黑</td>
+      <td class="num">179</td>
+      <td class="num">12.29%</td>
+      <td class="num">22</td>
+      <td class="num">¥3,586</td>
+      <td class="num">¥163</td>
+      <td class="num">22</td>
+      <td class="num">¥3,586</td>
+      <td class="num">¥163</td>
+      <td class="num">0</td>
+      <td class="num">¥0</td>
+    </tr>
+    <tr>
+      <td>多人聚会丨6人超大包间·1小时 ｜ 可叠加丨双主机PS5NS</td>
+      <td class="num">177</td>
+      <td class="num">14.69%</td>
+      <td class="num">26</td>
+      <td class="num">¥3,185</td>
+      <td class="num">¥122.5</td>
+      <td class="num">25</td>
+      <td class="num">¥3,097</td>
+      <td class="num">¥123.9</td>
+      <td class="num">1</td>
+      <td class="num">¥88</td>
+    </tr>
+    <tr>
+      <td>1-3人包间丨2小时ps5/Xbox/switch亲子游戏</td>
+      <td class="num">103</td>
+      <td class="num">25.24%</td>
+      <td class="num">26</td>
+      <td class="num">¥3,396</td>
+      <td class="num">¥130.6</td>
+      <td class="num">25</td>
+      <td class="num">¥3,268</td>
+      <td class="num">¥130.7</td>
+      <td class="num">1</td>
+      <td class="num">¥128</td>
+    </tr>
+    <tr>
+      <td>【超时券】请在工作人员的指导下使用</td>
+      <td class="num">80</td>
+      <td class="num">12.50%</td>
+      <td class="num">10</td>
+      <td class="num">¥427</td>
+      <td class="num">¥42.7</td>
+      <td class="num">10</td>
+      <td class="num">¥417</td>
+      <td class="num">¥41.7</td>
+      <td class="num">1</td>
+      <td class="num">¥20</td>
+    </tr>
+    <tr>
+      <td>【2-4人大包间】3小时双主机超值套餐</td>
+      <td class="num">74</td>
+      <td class="num">12.16%</td>
+      <td class="num">9</td>
+      <td class="num">¥1,938</td>
+      <td class="num">¥215.3</td>
+      <td class="num">9</td>
+      <td class="num">¥1,938</td>
+      <td class="num">¥215.3</td>
+      <td class="num">1</td>
+      <td class="num">¥218</td>
+    </tr>
+    <tr>
+      <td>【朋友聚会】4人包间1小时 ｜ 马里奥赛车/大乱斗马里奥派对</td>
+      <td class="num">68</td>
+      <td class="num">20.59%</td>
+      <td class="num">14</td>
+      <td class="num">¥1,144</td>
+      <td class="num">¥81.7</td>
+      <td class="num">14</td>
+      <td class="num">¥1,144</td>
+      <td class="num">¥81.7</td>
+      <td class="num">0</td>
+      <td class="num">¥0</td>
+    </tr>
+    <tr>
+      <td>全员同玩丨 6-8 人双屏幕 1 小时丨双机位不轮流聚会必备</td>
+      <td class="num">58</td>
+      <td class="num">10.34%</td>
+      <td class="num">6</td>
+      <td class="num">¥1,280</td>
+      <td class="num">¥213.3</td>
+      <td class="num">6</td>
+      <td class="num">¥1,280</td>
+      <td class="num">¥213.3</td>
+      <td class="num">1</td>
+      <td class="num">¥118</td>
+    </tr>
+    <tr>
+      <td>【闺蜜基友】1-3人包1小时 ｜ 多人必玩马里奥排队胡闹厨房</td>
+      <td class="num">57</td>
+      <td class="num">31.58%</td>
+      <td class="num">18</td>
+      <td class="num">¥1,321</td>
+      <td class="num">¥73.4</td>
+      <td class="num">18</td>
+      <td class="num">¥1,321</td>
+      <td class="num">¥73.4</td>
+      <td class="num">0</td>
+      <td class="num">¥0</td>
+    </tr>
+    <tr>
+      <td>1-3人包间丨3小时ps5/Xbox/switch亲子游玩</td>
+      <td class="num">46</td>
+      <td class="num">19.57%</td>
+      <td class="num">9</td>
+      <td class="num">¥1,680</td>
+      <td class="num">¥186.7</td>
+      <td class="num">9</td>
+      <td class="num">¥1,680</td>
+      <td class="num">¥186.7</td>
+      <td class="num">1</td>
+      <td class="num">¥188</td>
+    </tr>
+    <tr>
+      <td>【双影奇境工作日包天】单人小包间包天</td>
+      <td class="num">25</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+    </tr>
+    <tr>
+      <td>【三次卡】1-2人包3小时3次卡</td>
+      <td class="num">1</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+      <td class="num">-</td>
+    </tr>
+      </table>
+    </div>
+  </div>
+</details>
+<details open>
+  <summary>诊断对齐 <span class="meta">盲点 6</span></summary>
+  <div class="details-body">
+    <p class="muted" style="font-size:12px;">用美团给出的等级反查本报告问题清单：优秀、良好、一般、偏弱、薄弱分别对应平台原始等级 S、A、B、C、D。当美团认为某指标偏弱或薄弱但我们没在问题里提及，就是诊断盲点；反之我们标为高优先级问题但美团认为优秀，需要复核我们是否过度告警。</p>
+    
+    <h3 style="font-size:13px;margin:14px 0 6px;">⚠ 诊断盲点（美团认为是弱项，我们未触及） <span class="muted" style="font-weight:400;">· 6 项</span></h3>
+    <p class="muted" style="font-size:12px;margin:0 0 8px;">建议人工评估，决定是否补成高优先级问题。</p>
+    <table>
+      <tr><th>等级</th><th>分类</th><th>指标</th><th class="num">本店值</th><th class="num">同行均值</th><th class="num">同行优秀值</th></tr>
+      <tr>
+    <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    <td>下单券数</td>
+    <td>是否折扣卡在线</td>
+    <td class="num">无</td>
+    <td class="num">/</td>
+    <td class="num">有</td>
+  </tr>
+      <tr>
+    <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    <td>下单券数</td>
+    <td>是否有次卡在线</td>
+    <td class="num">无</td>
+    <td class="num">/</td>
+    <td class="num">有</td>
+  </tr>
+      <tr>
+    <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    <td>下单券数</td>
+    <td>是否有拼团在线</td>
+    <td class="num">无</td>
+    <td class="num">/</td>
+    <td class="num">有</td>
+  </tr>
+      <tr>
+    <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    <td>下单券数</td>
+    <td>流失到别店比率</td>
+    <td class="num">25.04%</td>
+    <td class="num">17.45%</td>
+    <td class="num">0.00%</td>
+  </tr>
+      <tr>
+    <td><span class="grade-pill grade-c">偏弱（C）</span></td>
+    <td>星级评价</td>
+    <td>差评回复率</td>
+    <td class="num">0.00%</td>
+    <td class="num">37.50%</td>
+    <td class="num">37.50%</td>
+  </tr>
+      <tr>
+    <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    <td>星级评价</td>
+    <td>好评率</td>
+    <td class="num">94.44%</td>
+    <td class="num">93.92%</td>
+    <td class="num">100.00%</td>
+  </tr>
+    </table>
+    
+    
+  </div>
+</details>
+<details open>
+  <summary>美团门店诊断 <span class="meta">21 个指标 · <span class="grade-chip grade-s">优秀（S）×11</span> <span class="grade-chip grade-a">良好（A）×2</span> <span class="grade-chip grade-b">一般（B）×2</span> <span class="grade-chip grade-c">偏弱（C）×1</span> <span class="grade-chip grade-d">薄弱（D）×5</span></span></summary>
+  <div class="details-body">
+    <p class="muted" style="font-size:12px;">美团经营参谋 - 门店竞争力诊断接口返回。优秀为最好，薄弱为最弱。下方按弱→强排序，先看偏弱和薄弱等级。</p>
+    <table>
+      <tr><th>分类</th><th>指标</th><th class="num">本店值</th><th class="num">同行均值</th><th class="num">同行优秀值</th><th>评估</th></tr>
+      <tr class="grade-row grade-d">
+      <td>下单券数</td>
+      <td>是否折扣卡在线</td>
+      <td class="num">无</td>
+      <td class="num">/</td>
+      <td class="num">有</td>
+      <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    </tr>
+    <tr class="grade-row grade-d">
+      <td>下单券数</td>
+      <td>是否有次卡在线</td>
+      <td class="num">无</td>
+      <td class="num">/</td>
+      <td class="num">有</td>
+      <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    </tr>
+    <tr class="grade-row grade-d">
+      <td>下单券数</td>
+      <td>是否有拼团在线</td>
+      <td class="num">无</td>
+      <td class="num">/</td>
+      <td class="num">有</td>
+      <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    </tr>
+    <tr class="grade-row grade-d">
+      <td>下单券数</td>
+      <td>流失到别店比率</td>
+      <td class="num">25.04%</td>
+      <td class="num">17.45%</td>
+      <td class="num">0.00%</td>
+      <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    </tr>
+    <tr class="grade-row grade-d">
+      <td>星级评价</td>
+      <td>好评率</td>
+      <td class="num">94.44%</td>
+      <td class="num">93.92%</td>
+      <td class="num">100.00%</td>
+      <td><span class="grade-pill grade-d">薄弱（D）</span></td>
+    </tr>
+    <tr class="grade-row grade-c">
+      <td>星级评价</td>
+      <td>差评回复率</td>
+      <td class="num">0.00%</td>
+      <td class="num">37.50%</td>
+      <td class="num">37.50%</td>
+      <td><span class="grade-pill grade-c">偏弱（C）</span></td>
+    </tr>
+    <tr class="grade-row grade-b">
+      <td>流量</td>
+      <td>点击率</td>
+      <td class="num">7.29%</td>
+      <td class="num">7.19%</td>
+      <td class="num">19.29%</td>
+      <td><span class="grade-pill grade-b">一般（B）</span></td>
+    </tr>
+    <tr class="grade-row grade-b">
+      <td>下单券数</td>
+      <td>在线咨询 30 秒内回复率</td>
+      <td class="num">77.11%</td>
+      <td class="num">67.87%</td>
+      <td class="num">67.87%</td>
+      <td><span class="grade-pill grade-b">一般（B）</span></td>
+    </tr>
+    <tr class="grade-row grade-a">
+      <td>下单券数</td>
+      <td>下单转化率</td>
+      <td class="num">9.93%</td>
+      <td class="num">11.80%</td>
+      <td class="num">41.90%</td>
+      <td><span class="grade-pill grade-a">良好（A）</span></td>
+    </tr>
+    <tr class="grade-row grade-a">
+      <td>下单券数</td>
+      <td>访问店铺详情页时长</td>
+      <td class="num">11秒</td>
+      <td class="num">4秒</td>
+      <td class="num">12秒</td>
+      <td><span class="grade-pill grade-a">良好（A）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>流量</td>
+      <td>曝光量</td>
+      <td class="num">77,318</td>
+      <td class="num">3,304</td>
+      <td class="num">24,427</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>下单券数</td>
+      <td>信息完整度</td>
+      <td class="num">100</td>
+      <td class="num">/</td>
+      <td class="num">100</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>下单券数</td>
+      <td>在线团单数</td>
+      <td class="num">13</td>
+      <td class="num">3</td>
+      <td class="num">13</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>下单券数</td>
+      <td>在线预订项目数</td>
+      <td class="num">0</td>
+      <td class="num">0.01</td>
+      <td class="num">0</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>下单券数</td>
+      <td>在线咨询 5 分钟内回复率</td>
+      <td class="num">100.00%</td>
+      <td class="num">94.54%</td>
+      <td class="num">94.54%</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>下单券数</td>
+      <td>400电话接通率</td>
+      <td class="num">0.00%</td>
+      <td class="num">/</td>
+      <td class="num">/</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>星级评价</td>
+      <td>飞单处罚</td>
+      <td class="num">否</td>
+      <td class="num">/</td>
+      <td class="num">否</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>星级评价</td>
+      <td>诚信违规</td>
+      <td class="num">否</td>
+      <td class="num">/</td>
+      <td class="num">否</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>星级评价</td>
+      <td>投诉量</td>
+      <td class="num">0</td>
+      <td class="num">0</td>
+      <td class="num">0</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>星级评价</td>
+      <td>退款率</td>
+      <td class="num">0.00%</td>
+      <td class="num">0.00%</td>
+      <td class="num">0.00%</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    <tr class="grade-row grade-s">
+      <td>星级评价</td>
+      <td>累计评价数</td>
+      <td class="num">2362</td>
+      <td class="num">406</td>
+      <td class="num">2,673</td>
+      <td><span class="grade-pill grade-s">优秀（S）</span></td>
+    </tr>
+    </table>
+  </div>
+</details>
+<details>
+  <summary>全部问题清单 <span class="meta">P1×5 · P2×7 · P3×3</span></summary>
+  <div class="details-body"><div class="issue">
+      <div class="head"><span class="badge p1">P1</span>
+        <span class="muted">转化</span> 近30天「曝光→访问」转化率 6.95%，仅为同行均值 7.90% 的 88%。近7天该环节下滑至 6.95%（环比近30天 -7%）。</div>
+      <div class="root">「曝光→访问」转化率 6.95%，仅为同行均值 7.90% 的 88%，是当前意向转化损失的主来源。 若把「曝光→访问」追到同行均值，近30天意向转化 82 → 约 94，预计多约 12 单（+15%）。这是本店当前第一优先级。</div>
+      <ul class="official-quotes"><li><strong>曝光访问转化率</strong>：访问人数/曝光人数</li><li><strong>意向转化率</strong>：意向转化人数/访问人数</li></ul>
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p1">P1</span>
+        <span class="muted">流量</span> 近30天头图/相册/视频点击率 0.43%，低于同行均值 3.58%。</div>
+      <div class="root">曝光→访问转化偏低，且入口视觉资产没有把包间、设备、氛围和多人场景讲清楚。</div>
+      <ul class="official-quotes"><li><strong>曝光访问转化率</strong>：访问人数/曝光人数</li></ul>
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">推广</span> 推广通余额已耗尽，影响广告效果。查看详情&gt;&gt;</div>
+      <div class="root">账户余额或投放状态异常会让日监控波动失真。</div>
+      
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">咨询</span> 近30天在线咨询点击率 1.39%，咨询入口使用偏弱。</div>
+      <div class="root">用户疑问可能没有在详情页和套餐规则里被提前消化，咨询入口也没有形成有效承接。</div>
+      <ul class="official-quotes"><li><strong>在线咨询点击率</strong>：在线咨询点击率：在线咨询模块点击用户数/商户详情页访问用户数 在线咨询点击人数：在线咨询模块点击用户数</li></ul>
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p3">P3</span>
+        <span class="muted">交叉校验</span> 意向转化低于同行均值时，优先结合套餐结构、预约规则、评价背书和咨询入口检查。</div>
+      <div class="root">三入口证据链未完全闭合，不能把单一来源当成最终事实。</div>
+      <ul class="official-quotes"><li><strong>意向转化率</strong>：意向转化人数/访问人数</li></ul>
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p3">P3</span>
+        <span class="muted">竞对</span> 前台竞对评分中「曝光入口、价格货架」对全批竞对都接近满分，无区分度。</div>
+      <div class="root">当前 6 维评分用绝对阈值，多个维度对全批竞对都给到接近满分，无法区分竞对强弱；竞对评分标准需细化（改为同批相对分位或更细的前台证据颗粒），在此之前竞对优先级应以后台流失权重为主。</div>
+      
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p1">P1</span>
+        <span class="muted">竞对</span> WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）：前台 6 维与本批竞对接近，无明显前台差异化优势，竞对优先级 75/100。</div>
+      <div class="root">该竞对的竞对优先级主要由后台流失权重驱动（后台排名 1），不是前台展示拉开的差距。防守重点是后台同用户池争夺，不要照搬其前台。</div>
+      
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p1">P1</span>
+        <span class="muted">竞对</span> Take Two·游戏私影体验馆·Switch·PS5电玩（新街口店）：前台 6 维与本批竞对接近，无明显前台差异化优势，竞对优先级 75/100。</div>
+      <div class="root">该竞对的竞对优先级主要由后台流失权重驱动（后台排名 2），不是前台展示拉开的差距。防守重点是后台同用户池争夺，不要照搬其前台。</div>
+      
+      
+    </div>
+    <div class="issue">
+      <div class="head"><span class="badge p1">P1</span>
+        <span class="muted">竞对</span> 小屋电玩 ps5·switch 主机游戏馆（新街口店）：前台 6 维与本批竞对接近，无明显前台差异化优势，竞对优先级 75/100。</div>
+      <div class="root">该竞对的竞对优先级主要由后台流失权重驱动（后台排名 3），不是前台展示拉开的差距。防守重点是后台同用户池争夺，不要照搬其前台。</div>
+      
+      
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">套餐货架</span> <span class="source-chip">美团反查</span> 美团门店诊断[D级]·下单券数·是否折扣卡在线：本店值 无（同行优秀值 有）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 D 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      <ul class="official-quotes"><li><strong>下单券数</strong>：顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。</li></ul>
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>上线一档折扣卡套餐试投</li><li>观察 7 天加购量与下单率</li><li>不达标即下线</li></ul>
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">套餐货架</span> <span class="source-chip">美团反查</span> 美团门店诊断[D级]·下单券数·是否有次卡在线：本店值 无（同行优秀值 有）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 D 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      <ul class="official-quotes"><li><strong>下单券数</strong>：顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。</li></ul>
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>配置 4 次/8 次 次卡选项</li><li>关联店铺常客和长流量包间</li><li>验收：30 天首次次卡复购率</li></ul>
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">套餐货架</span> <span class="source-chip">美团反查</span> 美团门店诊断[D级]·下单券数·是否有拼团在线：本店值 无（同行优秀值 有）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 D 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      <ul class="official-quotes"><li><strong>下单券数</strong>：顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。</li></ul>
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>上线 2-3 人成团团购</li><li>与现有双人套餐做客单梯度</li><li>观察拼团成团率与客单</li></ul>
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">竞对</span> <span class="source-chip">美团反查</span> 美团门店诊断[D级]·下单券数·流失到别店比率：本店值 25.04%（同行均值 17.45%、同行优秀值 0.00%）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 D 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      <ul class="official-quotes"><li><strong>下单券数</strong>：顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。</li></ul>
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>对小熊/WASD/探界做横向对比</li><li>锁定首图/榜单背书/价格梯度三项</li><li>把潜客台账分流到二次承接动作</li></ul>
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p3">P3</span>
+        <span class="muted">评价</span> <span class="source-chip">美团反查</span> 美团门店诊断[C级]·星级评价·差评回复率：本店值 0.00%（同行均值 37.50%、同行优秀值 37.50%）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 C 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>上线&quot;24 小时差评回复 标准流程&quot;</li><li>为店长/前台准备 5 段模板话术</li><li>验收：差评回复率 ≥ 同行均值 35%</li></ul>
+    </div>
+    <div class="issue issue-meituan-grade">
+      <div class="head"><span class="badge p2">P2</span>
+        <span class="muted">评价</span> <span class="source-chip">美团反查</span> 美团门店诊断[D级]·星级评价·好评率：本店值 94.44%（同行均值 93.92%、同行优秀值 100.00%）。</div>
+      <div class="root">美团在 21 项门店诊断中给该指标 D 级，本店报告原 问题清单未触及。该指标的修复路径相对独立于流量/转化主漏点，可同步推进。</div>
+      
+      <ul class="recommended-actions"><li class="ra-header">建议动作：</li><li>核销后 标准流程 引导好评（不索评、不诱导）</li><li>为差评先线下沟通再回应</li><li>观察 30 天好评率回升趋势</li></ul>
+    </div></div>
+</details>
+<details>
+  <summary>竞对分析 <span class="meta">10 家</span></summary>
+  <div class="details-body">
+    <table>
+      <tr><th class="num">优先级</th><th class="num">后台排名</th><th>竞对</th>
+        <th class="num">曝光</th><th class="num">信任</th><th class="num">货架</th>
+        <th class="num">清晰</th><th class="num">口碑</th><th class="num">场景</th></tr>
+      <tr>
+      <td class="num">75</td>
+      <td class="num">1</td>
+      <td>WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）</td>
+      <td class="num">98</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">95</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">2</td>
+      <td>Take Two·游戏私影体验馆·Switch·PS5电玩（新街口店）</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">3</td>
+      <td>小屋电玩 ps5·switch 主机游戏馆（新街口店）</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">4</td>
+      <td>宅玩咖电玩Ps5·Switch·Xbox·主机桌游体验馆</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">6</td>
+      <td>结界电玩Ps5Ps4·Switch主机体验馆（新街口店）</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">7</td>
+      <td>嘟嘟电玩·PS5·Switch·Xbox（新百店）</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+    </tr>
+    <tr>
+      <td class="num">75</td>
+      <td class="num">8</td>
+      <td>探界包厢式电玩·PS5·Switch（南京新百店）</td>
+      <td class="num">100</td>
+      <td class="num">96</td>
+      <td class="num">100</td>
+      <td class="num">90</td>
+      <td class="num">94</td>
+      <td class="num">100</td>
+    </tr>
+    <tr>
+      <td class="num">74</td>
+      <td class="num">5</td>
+      <td>小熊电玩·日式·Ps5·Switch主机游戏室（新百店）</td>
+      <td class="num">98</td>
+      <td class="num">100</td>
+      <td class="num">100</td>
+      <td class="num">78</td>
+      <td class="num">100</td>
+      <td class="num">95</td>
+    </tr>
+    <tr>
+      <td class="num">64</td>
+      <td class="num">10</td>
+      <td>爆爆电玩PS·Switch·桌游体验馆</td>
+      <td class="num">98</td>
+      <td class="num">80</td>
+      <td class="num">100</td>
+      <td class="num">51</td>
+      <td class="num">83</td>
+      <td class="num">85</td>
+    </tr>
+    <tr>
+      <td class="num">59</td>
+      <td class="num">9</td>
+      <td>佳境电玩ps4·ps5·switch</td>
+      <td class="num">98</td>
+      <td class="num">97</td>
+      <td class="num">100</td>
+      <td class="num">40</td>
+      <td class="num">100</td>
+      <td class="num">85</td>
+    </tr>
+    </table>
+    <p class="block-title" style="font-size:14px;margin:18px 0 8px;">团购货架矩阵</p>
+    <table>
+      <tr><th class="num">排名</th><th>竞对</th><th class="num">套餐数</th>
+        <th class="num">价格带</th><th>销量最高套餐</th><th>货架策略</th></tr>
+      <tr>
+      <td class="num">1</td>
+      <td>WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）</td>
+      <td class="num">11</td>
+      <td class="num">¥28 ~ ¥290</td>
+      <td>双人包间2小时Ps.Pc.Switch.观影 <span class="muted">年售3000+</span></td>
+      <td>全量货架覆盖30分钟补时、1/1.5/2/3/4小时、包天、包夜，价格从¥28到¥290；主销集中在双人2小时和双人3小时，均年售3000+；同时用三人、四人套餐承接多人场景。</td>
+    </tr>
+    <tr>
+      <td class="num">2</td>
+      <td>Take Two·游戏私影体验馆·Switch·PS5电玩（新街口店）</td>
+      <td class="num">11</td>
+      <td class="num">¥10 ~ ¥141</td>
+      <td>『独立带门舒适大包厢』2小时电玩+猫咖包厢撸猫+桌游观影票 <span class="muted">年售3000+</span></td>
+      <td>Take Two 的美团货架以低价包厢和场景组合为核心：¥60以下占 6/11，主销爆款为¥50的2小时大包厢，兼顾学生、情侣、3-6人、4-20人团建、不限时和猫咖附加项。价格锚点强，低价引流和多人团建款同时存在。</td>
+    </tr>
+    <tr>
+      <td class="num">3</td>
+      <td>小屋电玩 ps5·switch 主机游戏馆（新街口店）</td>
+      <td class="num">14</td>
+      <td class="num">¥1 ~ ¥182</td>
+      <td>【2人小包2小时】ps5·switch电玩游戏票 <span class="muted">年售1000+</span></td>
+      <td>小屋完整货架共14个团购，以小包/中包/卡座的PS5与Switch时长票为主，补充工作日福利、包天、零食饮料和会员充值。2人小包2小时年售1000+，1小时小包与3-4人中包2小时也具备高销量，货架用低价1小时、2小时主款和多人中包承接不同客群。</td>
+    </tr>
+    <tr>
+      <td class="num">4</td>
+      <td>宅玩咖电玩Ps5·Switch·Xbox·主机桌游体验馆</td>
+      <td class="num">14</td>
+      <td class="num">¥1 ~ ¥4989</td>
+      <td>双人包间2小时Ps5·Xbox·NS畅玩票+精美零食 <span class="muted">年售1000+</span></td>
+      <td>宅玩咖完整货架共14个团购，核心是PS5/Xbox/NS包间时长梯度，同时补充桌游大厅不限时和新品到店提示。双人2小时与周末节假日桌游不限时均年售1000+，1小时双人包间年售800+，形成电玩包间和桌游大厅双入口。</td>
+    </tr>
+    <tr>
+      <td class="num">6</td>
+      <td>结界电玩Ps5Ps4·Switch主机体验馆（新街口店）</td>
+      <td class="num">16</td>
+      <td class="num">¥1 ~ ¥4992</td>
+      <td>【2人包间】2小时PS·NS体验票 <span class="muted">年售1000+</span></td>
+      <td>结界美团完整货架共16个团购，以猫咪视觉统一包装套餐。核心成交款是2人包间2小时¥77、年售1000+；双人包间覆盖1/2/3/4小时，大厅覆盖1/2/3小时，另有2-4人包间1/2小时、工作日大厅/2人包间包天、节假日包夜、30分钟延时票和¥1找路/游戏更新钩子。货架同时承担低价引流、路径说明、时长升级、多人承接和高额储值。</td>
+    </tr>
+    <tr>
+      <td class="num">7</td>
+      <td>嘟嘟电玩·PS5·Switch·Xbox（新百店）</td>
+      <td class="num">20</td>
+      <td class="num">¥2 ~ ¥289</td>
+      <td>PS5·Switch2观影包间双人票2小时+精美零食 <span class="muted">年售1000+</span></td>
+      <td>嘟嘟美团完整货架共20个团购，品类覆盖PS5/Switch2观影包间、包夜、拼豆、桌游大厅、补时券、新会员活动和新品到店提示。2小时双人观影包间年售1000+，拼豆与桌游形成低价高频补充入口，包夜、包天和多人票负责时长升级。</td>
+    </tr>
+    <tr>
+      <td class="num">8</td>
+      <td>探界包厢式电玩·PS5·Switch（南京新百店）</td>
+      <td class="num">15</td>
+      <td class="num">¥1 ~ ¥282.8</td>
+      <td>PS5/Switch观影包间双人票3小时+精美零食 <span class="muted">年售800+</span></td>
+      <td>探界美团完整货架共15个团购，低价钩子包括¥1品牌/环境卖点、¥1恐怖游戏到店、¥2 Switch2 预约体验、¥25半小时补时券和¥50.8双人1小时；核心主销围绕双人观影包间1/1.5/2/3小时形成时长梯度，其中双人3小时年售800+、双人1小时年售400+；同时用三人1/2小时、四人1/4小时和2~4人包夜/工作日包天承接多人和高客单长时长场景。</td>
+    </tr>
+    <tr>
+      <td class="num">5</td>
+      <td>小熊电玩·日式·Ps5·Switch主机游戏室（新百店）</td>
+      <td class="num">13</td>
+      <td class="num">¥2 ~ ¥291</td>
+      <td>双人包间 2小时Pc.Ps.Switch.观影 <span class="muted">年售3000+</span></td>
+      <td>全量货架共13个团购：双人1/1.5/2/3/4小时构成核心时长梯度，三人1/2小时和四人1小时承接多人场景，另有包夜、工作日包天和拼豆单人票扩展非主机游戏需求；主销集中在双人2小时年售3000+和双人1小时年售2000+，低价入口为¥54-¥56，高客单为¥291工作日包天。</td>
+    </tr>
+    <tr>
+      <td class="num">10</td>
+      <td>爆爆电玩PS·Switch·桌游体验馆</td>
+      <td class="num">9</td>
+      <td class="num">¥1 ~ ¥200</td>
+      <td>【新游速递】生化危机9/生灵重塑 <span class="muted">年售100+</span></td>
+      <td>全量下滑至“收起”底部后连续两次无新增套餐名。货架以1元新游引流、1/2/3小时2-4人包间主销、包夜/包天长时段、单人桌游不限时和补时券组成，价格带覆盖¥1-¥200。</td>
+    </tr>
+    <tr>
+      <td class="num">9</td>
+      <td>佳境电玩ps4·ps5·switch</td>
+      <td class="num">8</td>
+      <td class="num">¥28.9 ~ ¥146</td>
+      <td>双人小包｜Ps4·Ps5·Switch2小时畅玩票 <span class="muted">年售200+</span></td>
+      <td>展开“更多2个团购”后下滑至“收起”和评价区，连续两次无新增套餐名。货架以双人小包 1/2/3 小时和四人大包 1/2/3 小时为主，叠加新客一小时与电竞/电影一小时，主销集中在双人小包低客单时段。</td>
+    </tr>
+    </table>
+  </div>
+</details>
+<details>
+  <summary>数据可信度明细 <span class="meta">B 级 · 数据 B / 覆盖率 A · 0 错误 · 1 警告 · 8 提示</span></summary>
+  <div class="details-body"><ul class="findings">
+      <li><span class="sev-info">[提示]</span> last7 意向转化人数 = 下单人数(82)：本店留资与在线预约均为 0，按美团口径（意向转化=下单+留资+预约）二者本就相等，非数据问题。</li>
+      <li><span class="sev-info">[提示]</span> last7 访问数口径不一致：flow.访问人数=1031，whereabouts.modules.visits=934。</li>
+      <li><span class="sev-info">[提示]</span> last30 意向转化人数 = 下单人数(434)：本店留资与在线预约均为 0，按美团口径（意向转化=下单+留资+预约）二者本就相等，非数据问题。</li>
+      <li><span class="sev-info">[提示]</span> last30 访问数口径不一致：flow.访问人数=5485，whereabouts.modules.visits=5102。</li>
+      <li><span class="sev-info">[提示]</span> last90 意向转化人数 = 下单人数(1237)：本店留资与在线预约均为 0，按美团口径（意向转化=下单+留资+预约）二者本就相等，非数据问题。</li>
+      <li><span class="sev-info">[提示]</span> last90 访问数口径不一致：flow.访问人数=18000，whereabouts.modules.visits=16823。</li>
+      <li><span class="sev-warn">[警告]</span> 平均停留时长在 last7/last30/last90 三个周期完全恒等(9秒)，疑似默认值或采集兜底，不能作为真实停留判断。</li>
+      <li><span class="sev-info">[提示]</span> 预约率与留资用户数在所有周期均为 0，可能门店未启用该功能；相关结论应注明而非按 0 诊断。</li>
+      <li><span class="sev-info">[提示]</span> 同店同日存在 605 条 superseded 历史版本；当前诊断只使用 active 快照。</li>
+    </ul></div>
+</details>
+<details>
+  <summary>采集与交叉校验状态 <span class="meta">双后台已比对</span></summary>
+  <div class="details-body">
+    <table>
+      <tr><th>项目</th><th>状态</th></tr>
+      <tr><td>Web/App 后台</td><td>已完成 Web/App 逐字段交叉校验：21 个双源字段，验证率 100.0%，冲突 0 个。</td></tr>
+      <tr><td>前台平台</td><td>continue_primary，建议平台 美团，策略 美团 -&gt; 大众点评。美团 前台证据可用覆盖率 100.0%，未触发回退阈值。</td></tr>
+      <tr><td>前台补证来源</td><td>前台补证来源 competitor-ranking-full-2026-05-08：共 71 条，本店 6 条、竞对 65 条；最大证据日龄 14 天，过期 0 条。</td></tr>
+    </table>
+  </div>
+</details>
+<details>
+  <summary>交叉校验 <span class="meta">1 项待复核</span></summary>
+  <div class="details-body">
+    <table>
+      <tr><th>状态</th><th>指标</th><th>说明</th><th class="num">来源一</th><th class="num">来源二</th></tr>
+      <tr>
+      <td><span class="badge ok">通过</span></td>
+      <td>必需证据覆盖率</td>
+      <td>必需证据已覆盖。</td>
+      <td class="num">1</td>
+      <td class="num">0</td>
+    </tr>
+    <tr>
+      <td><span class="badge ok">通过</span></td>
+      <td>网页端与手机端后台覆盖率</td>
+      <td>双后台逐字段比对：21 个字段两端都采到，其中 21 个一致、0 个冲突、0 个无法比对；另有 1512 个仅 网页端 单源、57 个仅 手机端 单源。 无冲突字段。</td>
+      <td class="num">21</td>
+      <td class="num">0</td>
+    </tr>
+    <tr>
+      <td><span class="badge ok">通过</span></td>
+      <td>后台曝光访问率与前台承接核对</td>
+      <td>已有前台证据，可把访问率问题追到首图、榜单、团购和评价展示。</td>
+      <td class="num">0.07490000000000001</td>
+      <td class="num">0.0806</td>
+    </tr>
+    <tr>
+      <td><span class="badge p2">需复核</span></td>
+      <td>后台意向转化率与前台承接核对</td>
+      <td>意向转化低于同行均值时，优先结合套餐结构、预约规则、评价背书和咨询入口检查。</td>
+      <td class="num">0.0791</td>
+      <td class="num">0.1663</td>
+    </tr>
+    <tr>
+      <td><span class="badge ok">通过</span></td>
+      <td>推广花费与订单成本</td>
+      <td>推广消耗必须和订单、核销一起看，不能只看曝光和点击。</td>
+      <td class="num">6439.670000000002</td>
+      <td class="num">196</td>
+    </tr>
+    <tr>
+      <td><span class="badge ok">通过</span></td>
+      <td>本店与竞对前台证据覆盖率</td>
+      <td>已有竞对前台证据，可做同屏卖点对比。</td>
+      <td class="num">6</td>
+      <td class="num">65</td>
+    </tr>
+    </table>
+  </div>
+</details>
+<details>
+  <summary>美团官方口径 <span class="meta">25 个指标 · 34 个组件</span></summary>
+  <div class="details-body">
+    <p class="muted" style="font-size:12px;">下列定义直接采自美团经营参谋后台接口。报告中每个数字都可参照此处的官方解释复核。</p>
+    <table><tr><th>指标</th><th>美团口径</th></tr><tr><td class="metric-name">电话点击率</td><td>电话点击率：电话模块点击用户数/商户详情页访问用户数 电话点击人数：电话模块点击用户数</td></tr>
+    <tr><td class="metric-name">访问次数</td><td>店铺详情页的访问次数。包含自然和广告流量，不去重。</td></tr>
+    <tr><td class="metric-name">访问人数</td><td>店铺详情页的访问人数。包含自然和广告流量，按照用户去重。</td></tr>
+    <tr><td class="metric-name">核销金额</td><td>顾客在店铺中实际消费的金额总和，扣除商家优惠，不扣除平台优惠，不包含客满满收单数据。例如某团单售价99，平台优惠10元，商户优惠5元，那么商家优惠后核销额为99-5=94元。</td></tr>
+    <tr><td class="metric-name">核销金额（原价）</td><td>顾客到店验券核销的订单原价，不扣除商家优惠和平台优惠，不包含客满满收单数据。例如某团单售价99，平台优惠10元，商户优惠5元，那么核销售价金额为99元。</td></tr>
+    <tr><td class="metric-name">核销券数</td><td>顾客到店验券核销券数或支付笔数。（不包含客满满收单数据）</td></tr>
+    <tr><td class="metric-name">核销人数</td><td>在店铺中购买并已经到店核销的顾客人数，按单个商品进行去重。（不包含客满满收单数据）</td></tr>
+    <tr><td class="metric-name">累计收藏人数</td><td>累计收藏人数。因用户有取消收藏行为，因此累计收藏人数存在上下波动。</td></tr>
+    <tr><td class="metric-name">留资人数</td><td>统计周期内通过门店电话、虚拟号电话、在线咨询、团购、营销活动、线下录入等渠道留资的用户数</td></tr>
+    <tr><td class="metric-name">曝光次数</td><td>在列表页、手机端首页推荐等处看到店铺的次数。包含自然和广告流量，不去重。</td></tr>
+    <tr><td class="metric-name">曝光访问转化率</td><td>访问人数/曝光人数</td></tr>
+    <tr><td class="metric-name">曝光人数</td><td>在列表页、手机端首页推荐等处看到店铺的人数。包含自然和广告流量，按照用户去重。</td></tr>
+    <tr><td class="metric-name">退款金额（原价）</td><td>根据退款成功时间统计，支付完成但发生退款的订单原价，不扣除商家优惠和平台优惠。例如某团单售价99，平台优惠10元，商户优惠5元，那么退款售价金额为99元。</td></tr>
+    <tr><td class="metric-name">退款券数</td><td>根据退款成功时间统计，支付完成但发生退款的券数或支付笔数。包含用户核销前主动退款、超时退款、过期自动退、商户拒单等各类原因的订单。</td></tr>
+    <tr><td class="metric-name">下单金额</td><td>顾客线上支付成功并接单的商品原价，扣除商家优惠，不扣除平台优惠，包含当天退款的订单金额。根据用户下单前访问过的门店或用户地理位置匹配门店。例如某团单售价99，平台优惠10元，商户优惠5元，那么商家优惠后下单额为99-5=94元。</td></tr>
+    <tr><td class="metric-name">下单金额（原价）</td><td>顾客线上支付成功并接单的商品原价，不扣除商家优惠和平台优惠，包含当天退款的订单金额。根据用户下单前访问过的门店或用户地理位置匹配门店。例如某团单售价99，平台优惠10元，商户优惠5元，那么下单售价金额为99元。</td></tr>
+    <tr><td class="metric-name">下单券数</td><td>顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。</td></tr>
+    <tr><td class="metric-name">下单人数</td><td>购买店铺商品或服务的人数</td></tr>
+    <tr><td class="metric-name">新增打卡人数</td><td>在统计时间段内，在大众点评商户详情页点击打卡并打卡成功的用户人数，单日内按用户去重，跨天累加。</td></tr>
+    <tr><td class="metric-name">新增收藏人数</td><td>新增收藏人数</td></tr>
+    <tr><td class="metric-name">页面停留时长</td><td>页面停留时长：用户在店铺详情页的停留时间</td></tr>
+    <tr><td class="metric-name">意向转化率</td><td>意向转化人数/访问人数</td></tr>
+    <tr><td class="metric-name">意向转化人数</td><td>在当前门店直接下单或在线预约或留资的用户数，即下单人数+留资人数+在线预约人数，不同渠道之间去重；举例：下单人数2，留资人数2，在线预约人数2，其中2个用户预约后下单，意向转化人数=2+2+2-2=4</td></tr>
+    <tr><td class="metric-name">在线预约点击率</td><td>在线预约点击率：在线预约模块点击用户数/商户详情页访问用户数 在线预约点击人数：在线预约模块点击用户数</td></tr>
+    <tr><td class="metric-name">在线咨询点击率</td><td>在线咨询点击率：在线咨询模块点击用户数/商户详情页访问用户数 在线咨询点击人数：在线咨询模块点击用户数</td></tr></table>
+    <p class="muted" style="margin-top:12px;font-size:12px;">组件级口径：</p><table><tr><th>组件</th><th>美团口径</th></tr><tr><td class="metric-name">电话点击率_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">电话点击人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">访问次数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">访问人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">访问新老客分布</td><td>访问新客人数：访问门店顾客中，近30天未访问过店铺的顾客人数，去重计数 访问老客人数：访问门店顾客中，近30天曾访问过店铺的顾客人数，去重计数</td></tr>
+    <tr><td class="metric-name">顾客商圈分布</td><td>访问您门店客户的活跃商圈分布情况，部分客户信息不完善无法判断活跃商圈 活跃商圈：表示用户经常活跃的商圈，根据用户访问美团点评时所在商圈判断</td></tr>
+    <tr><td class="metric-name">累计收藏人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">流量来源</td><td>仅统计美团手机端、大众点评手机端内的流量来源，不包括小程序、网页版和广告外投流量</td></tr>
+    <tr><td class="metric-name">流量漏斗分析</td><td>意向转化人数：在当前门店直接下单或在线预约或留资的用户数，即下单人数+留资人数+在线预约人数，不同渠道之间去重；举例：下单人数2，留资人数2，在线预约人数2，其中2个用户预约后下单，意向转化人数=2+2+2-2=4</td></tr>
+    <tr><td class="metric-name">留资人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">年龄分布</td><td>访问您门店客户的各年龄段分布，部分客户信息不完善无法判断年龄和性别</td></tr>
+    <tr><td class="metric-name">曝光次数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">曝光访问转化率_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">曝光人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">是否有车</td><td>根据用户基础信息及行为特征构建预测模型，对有车概率进行2分类预测</td></tr>
+    <tr><td class="metric-name">是否有孩子</td><td>根据用户基础信息及行为特征构建预测模型，对有孩概率进行2分类预测</td></tr>
+    <tr><td class="metric-name">下单人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">新老客分析</td><td>展示分新老客用户的下单数据，新老客的定义为当日在门店下完成首次购买，则计算为新客，否则为老客。
+【注意】若某个新客同一天在一个门店下单多次，那么第一次下单的人数、券数、金额统计为新客，后续的订单均统计为老客。因此，会存在交易概览中“下单人数”与新客下单人数+老客下单人数之和不相等的情况。</td></tr>
+    <tr><td class="metric-name">新增打卡人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">新增收藏人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">性别分布</td><td>访问您门店客户的性别分布，部分客户信息不完善无法判断性别</td></tr>
+    <tr><td class="metric-name">页面各模块点击分布</td><td>展示店铺页上各个模块的点击人数和点击率。 多门店时按照模块点击率排名，模块点击率越高门店排名越高。</td></tr>
+    <tr><td class="metric-name">页面停留时长_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">异业场景分布</td><td>访问您门店顾客的行业偏好分布情况，一个顾客可能有多个行业偏好，偏好占比越高，代表顾客对该行业的兴趣越大 异业偏好将根据顾客历史在各行业商户和商品的交易、访问行为综合计算</td></tr>
+    <tr><td class="metric-name">意向转化率_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">意向转化人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">引流用户数分析</td><td>美团引流人数：【指标口径】线下到店之前，就在店外线上通过美团或者大众点评浏览过门店信息的用户数，包括浏览后到店、咨询后到店、交易后到店的用户数；
+【举例说明】：10个用户在店外浏览过门店信息但没有咨询或者交易后到店，20个用户在线咨询后到店，30个用户购买团单后到店，则美团引流人数为60。 浏览后到店人数：【指标口径】在店外通过美团或者大众点评线上浏览过门店信息后，没有联系或者交易直接到店的用户数。 联系后到店人数：【指标口径】在店外通过美团或者大众点评线上浏览过门店信息，并联系商家后到店的用户数。 交易后到店人数：【指标口径】在店外通过美团或者大众点评线上浏览过门店信息，并完成线上交易后到店的用户数。 自然到店顾客：【指标口径】线下到店之前没有看过美团或者大众点评，到店后浏览门店信息或购买团购的用户数。 潜在顾客：【指标口径】在美团或者大众点评线上浏览过门店信息，但未联系商家或购买团购，也未到店的用户数。</td></tr>
+    <tr><td class="metric-name">用户等级分布</td><td>访问您门店客户的用户等级分布，包含大众点评和美团两个用户端</td></tr>
+    <tr><td class="metric-name">用户行为时段分布</td><td>用户访问：访问您门店客户的时间段分布，明细到小时粒度 用户下单：在您门店下单客户的时间段分布，明细到小时粒度</td></tr>
+    <tr><td class="metric-name">在线预约点击率_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">在线预约点击人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">在线咨询点击率_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">在线咨询点击人数_趋势</td><td>同行商户：根据门店品类，以及商户所在城市、行政区、商圈的门店数量综合计算，确定好竞争比较的区域范围 同行均值：同门店品类同竞争圈下商户对应指标的均值 同行优秀值：同门店品类同竞争圈下商户对应指标的优秀值，非最大值</td></tr>
+    <tr><td class="metric-name">交易商品汇总组件</td><td>下单人数：在店铺中购买商品的顾客人数，按门店进行去重，因去重维度不同，和商品列表内下单人数累加值可能不相等。（不包含客满满收单数据） 下单券数：顾客线上支付成功并接单的商品券数，包含当天退款的订单。根据用户下单前访问过的门店或用户地理位置匹配门店。 下单金额（原价）：顾客线上支付成功并接单的商品原价，不扣除商家优惠和平台优惠，包含当天退款的订单金额。根据用户下单前访问过的门店或用户地理位置匹配门店。例如某团单售价99，平台优惠10元，商户优惠5元，那么下单售价金额为99元。 下单金额：顾客线上支付成功并接单的商品原价，扣除商家优惠，不扣除平台优惠，包含当天退款的订单金额。根据用户下单前访问过的门店或用户地理位置匹配门店。例如某团单售价99，平台优惠10元，商户优惠5元，那么商家优惠后下单额为99-5=94元。 核销人数：在店铺中购买并已经到店核销的顾客人数，按单个商品进行去重。（不包含客满满收单数据） 核销券数：顾客到店验券核销券数或支付笔数。（不包含客满满收单数据） 核销金额（原价）：顾客到店验券核销的订单原价，不扣除商家优惠和平台优惠，不包含客满满收单数据。例如某团单售价99，平台优惠10元，商户优惠5元，那么核销售价金额为99元。 核销金额：顾客在店铺中实际消费的金额总和，扣除商家优惠，不扣除平台优惠，不包含客满满收单数据。例如某团单售价99，平台优惠10元，商户优惠5元，那么商家优惠后核销额为99-5=94元。 退款券数：根据退款成功时间统计，支付完成但发生退款的券数或支付笔数。包含用户核销前主动退款、超时退款、过期自动退、商户拒单等各类原因的订单。 退款金额（原价）：根据退款成功时间统计，支付完成但发生退款的订单原价，不扣除商家优惠和平台优惠。例如某团单售价99，平台优惠10元，商户优惠5元，那么退款售价金额为99元。</td></tr></table>
+  </div>
+</details>
+
+<footer>
+  自动执行边界：v1 只允许生成报告、创建待办、日监控提醒和操作草稿；<br>
+  充值、支付、改账号安全、发送客户消息、发布评价回复、直接提交套餐或预算变更均禁止自动执行。
+</footer>
+</div>
+</body>
+</html>

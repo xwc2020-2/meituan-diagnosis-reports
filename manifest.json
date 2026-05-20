@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "store_report_web_publish_v1",
+  "generatedAt": "2026-05-20T19:00:29.412Z",
+  "siteUrl": "https://xwc2020-2.github.io/meituan-diagnosis-reports",
+  "entries": [
+    {
+      "storeName": "超能玩家包间电玩switch·PS5游戏馆（新街口文化大厦店）",
+      "storeShortName": "超能玩家文化大厦店",
+      "MEITUAN_SHOP_ID": "758614954",
+      "MEITUAN_SHOP_ID_EXPLANATION": "美团门店 ID，中文解释：超能玩家文化大厦店的目标门店编号",
+      "businessDate": "2026-05-19",
+      "isCurrent": false
+    },
+    {
+      "storeName": "超能玩家包间电玩switch·PS5游戏馆（新街口文化大厦店）",
+      "storeShortName": "超能玩家文化大厦店",
+      "MEITUAN_SHOP_ID": "758614954",
+      "MEITUAN_SHOP_ID_EXPLANATION": "美团门店 ID，中文解释：超能玩家文化大厦店的目标门店编号",
+      "businessDate": "2026-05-19",
+      "isCurrent": true
+    }
+  ]
+}

@@ -1,0 +1,4339 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>超能玩家美团经营诊断正式完整版</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --paper: #ffffff;
+      --paper-strong: #f9fafb;
+      --ink: #111827;
+      --muted: #6b7280;
+      --subtle: #9ca3af;
+      --line: #d9dee7;
+      --line-strong: #b8c0cc;
+      --red: #ef4444;
+      --red-dark: #dc2626;
+      --risk: #ef4444;
+      --green: #047857;
+      --blue: #2563eb;
+      --accent: #0f766e;
+      --accent-strong: #0f766e;
+      --cyan: #0891b2;
+      --amber: #d97706;
+      --gold: #d97706;
+      --deep: #111827;
+      --cream: #ecfdf5;
+      --track: #e5e7eb;
+      --chip: #ecfdf5;
+      --shadow: none;
+      --panel-shadow: none;
+      --radius: 10px;
+      --page-width: 1280px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif;
+    }
+    body::before,
+    body::after { display: none; }
+    .wrap { width: min(var(--page-width), calc(100% - 32px)); margin: 0 auto; }
+    body > header, body > main, body > footer { position: relative; z-index: 1; }
+    header { padding: 16px 0 8px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(17,24,39,.9);
+      border-radius: 14px;
+      padding: 18px 20px;
+      min-height: 0;
+      background: linear-gradient(135deg, #111827 0%, #1f2937 58%, #0f766e 120%);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .hero::after {
+      display: none;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .hero-main { min-width: 0; }
+    .eyebrow {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 8px;
+      color: #5eead4;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif;
+      letter-spacing: -.035em;
+    }
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      color: #f9fafb;
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1.08;
+      font-weight: 950;
+    }
+    h2 { font-size: clamp(24px, 2.8vw, 34px); font-weight: 950; }
+    h3 { font-size: 21px; font-weight: 900; }
+    h4 { margin: 20px 0 10px; font-size: 17px; font-weight: 900; }
+    p { margin: 0; color: var(--muted); line-height: 1.75; }
+    code {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 1px 6px;
+      background: #f1f5f9;
+      color: var(--accent-strong);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: .92em;
+    }
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin-top: 8px;
+      color: #d1d5db;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .meta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(255,255,255,.08);
+      color: #e5e7eb;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .pill:first-child {
+      border-color: rgba(94,234,212,.38);
+      background: rgba(15,118,110,.34);
+      color: #ccfbf1;
+    }
+    a.pill { text-decoration: none; }
+    nav {
+      position: relative;
+      z-index: 2;
+      border: 0;
+      background: transparent;
+      backdrop-filter: none;
+    }
+    nav .wrap {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 8px 0 6px;
+    }
+    nav a {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(255,255,255,.92);
+      color: #334155;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 12px;
+      line-height: 1.35;
+      box-shadow: 0 1px 2px rgba(15,23,42,.04);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    nav a:hover {
+      transform: translateY(-1px);
+      border-color: rgba(15,118,110,.28);
+      background: #ffffff;
+      color: var(--accent);
+    }
+    main { counter-reset: report-section; }
+    section { padding: 18px 0; scroll-margin-top: 16px; }
+    section + section {
+      border-top: 1px solid rgba(226,232,240,.62);
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .section-title::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--accent);
+      flex: 0 0 auto;
+    }
+    .section-title h2 {
+      position: relative;
+      padding-left: 0;
+      margin-right: auto;
+    }
+    .section-title h2::before {
+      display: none;
+    }
+    .section-title small {
+      max-width: 520px;
+      color: var(--muted);
+      line-height: 1.5;
+      text-align: right;
+    }
+    .grid { display: grid; gap: 12px; align-items: start; }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card, .insight-module, details {
+      position: relative;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--panel-shadow);
+    }
+    .card { padding: 16px; }
+    .card > h3:first-child,
+    .insight-module h3,
+    .battle-card h3 {
+      letter-spacing: -.025em;
+    }
+    .decision-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    .decision-layout .priority-viz {
+      grid-column: 1 / -1;
+    }
+    .verdict {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: var(--ink);
+      background: #ffffff;
+      box-shadow: var(--panel-shadow);
+      border-left: 4px solid var(--accent);
+    }
+    .verdict::after {
+      display: none;
+    }
+    .verdict h3 { color: var(--ink); font-size: clamp(20px, 2vw, 24px); }
+    .verdict p { margin-top: 8px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .decision-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      counter-reset: decision;
+    }
+    .decision-item {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px 11px 42px;
+      background: #ffffff;
+      box-shadow: none;
+    }
+    .decision-item::before {
+      counter-increment: decision;
+      content: counter(decision);
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      display: grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--deep);
+      color: #fff;
+      font: 900 11px/1 "Noto Sans SC", sans-serif;
+    }
+    .decision-item span {
+      display: inline-flex;
+      margin-bottom: 5px;
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+    .decision-item strong { display: block; font-size: 15px; line-height: 1.42; }
+    .decision-item p { margin-top: 3px; font-size: 12px; line-height: 1.5; }
+    .kpi { font: 950 30px/.95 "Noto Sans SC", "PingFang SC", sans-serif; letter-spacing: -.04em; }
+    .label { margin-top: 7px; color: var(--muted); line-height: 1.5; font-size: 13px; }
+    .battle-card {
+      position: relative;
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: var(--paper);
+      box-shadow: var(--panel-shadow);
+    }
+    .battle-grid { align-items: stretch; }
+    .battle-grid .battle-card { height: 100%; }
+    .battle-support-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .battle-support-stack .card { width: 100%; }
+    .battle-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      opacity: .9;
+    }
+    .battle-card small {
+      display: inline-flex;
+      margin-bottom: 7px;
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .battle-card p {
+      margin-top: 7px;
+      min-height: 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .target-line { margin-top: auto; font-weight: 900; }
+    .now { color: var(--risk); }
+    .arrow { padding: 0 8px; color: var(--muted); }
+    .target { color: var(--green); }
+    .insight-stack { display: grid; gap: 12px; }
+    .insight-module { padding: 16px; }
+    .module-head {
+      display: grid;
+      justify-items: start;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .module-head h3 { font-size: clamp(21px, 2.2vw, 26px); }
+    .module-head span {
+      border: 1px solid rgba(15,118,110,.2);
+      border-radius: 8px;
+      padding: 4px 8px;
+      background: var(--chip);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .module-summary {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding: 2px 0;
+      margin: 0 0 12px;
+      list-style: none;
+      counter-reset: summary;
+      border-block: 1px solid var(--line);
+    }
+    .module-summary li {
+      position: relative;
+      min-width: 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      padding: 9px 4px 9px 38px;
+      background: transparent;
+      color: #334155;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .module-summary li:last-child { border-bottom: 0; }
+    .module-summary li::before {
+      counter-increment: summary;
+      content: counter(summary);
+      position: absolute;
+      left: 6px;
+      top: 10px;
+      display: grid;
+      width: 20px;
+      height: 20px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--deep);
+      color: #fff;
+      font: 900 11px/1 "Noto Sans SC", sans-serif;
+    }
+    details {
+      overflow: hidden;
+      box-shadow: var(--panel-shadow);
+      background: var(--paper-strong);
+    }
+    details + details { margin-top: 10px; }
+    summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      padding: 12px 14px;
+      color: var(--ink);
+      font-weight: 900;
+      list-style: none;
+      font-size: 14px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "展开";
+      flex: 0 0 auto;
+      color: var(--accent);
+      font-size: 12px;
+    }
+    details[open] summary::after { content: "收起"; }
+    .detail-body {
+      border-top: 1px solid var(--line);
+      padding: 12px 14px 14px;
+      background: var(--paper);
+    }
+    .detail-body > :first-child { margin-top: 0; }
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    th, td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    th {
+      color: #334155;
+      background: #f8fafc;
+      font-size: 12px;
+      white-space: nowrap;
+      font-weight: 900;
+    }
+    td { color: #334155; }
+    tbody tr:nth-child(even) td { background: rgba(248,250,252,.6); }
+    tbody tr:hover td { background: #eff6ff; }
+    tr:last-child td { border-bottom: 0; }
+    td strong { display: block; font-size: 16px; }
+    td span { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; }
+    table.compact th,
+    table.compact td {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    table.compact td:first-child {
+      font-weight: 850;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .tag, .badge {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .tag.good, .badge.good { background: rgba(20,117,72,.13); color: var(--green); }
+    .tag.bad, .badge.critical { background: rgba(239,68,68,.12); color: var(--risk); }
+    .tag.neutral, .badge.warn { background: rgba(245,158,11,.14); color: #b45309; }
+    ul.inline-quotes { margin: 6px 0 0; padding: 6px 10px 6px 22px;
+      background: #f8fafc; border-left: 3px solid var(--line);
+      font-size: 11.5px; color: var(--muted); list-style: '“ ' outside; }
+    ul.inline-quotes li { margin: 2px 0; line-height: 1.5; }
+    ul.inline-quotes strong { color: var(--ink); margin-right: 6px; font-weight: 700; }
+    .note {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .target-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 8px;
+      padding: 7px 9px;
+      background: #f8fafc;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .copy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .copy-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+    .copy-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      padding: 0;
+    }
+    .copy-card span { font-weight: 900; color: var(--ink); }
+    .copy-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      background: var(--deep);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    
+    .viz-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 12px 0 16px;
+      align-items: stretch;
+    }
+    .viz-grid.four,
+    .viz-grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .viz-grid.focus {
+      grid-template-columns: minmax(0, 1fr);
+      justify-content: stretch;
+    }
+    .priority-viz {
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+    .chart-card {
+      position: relative;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--paper);
+      box-shadow: var(--panel-shadow, none);
+      isolation: isolate;
+    }
+    .chart-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent, #0f766e), var(--cyan, #0891b2), var(--amber, #d97706));
+      opacity: 1;
+    }
+    .chart-card header { padding: 0; margin: 0 0 10px; }
+    .chart-card header span {
+      display: inline-flex;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .chart-card h3 {
+      margin: 4px 0 0;
+      color: var(--ink);
+      font-size: 17px;
+      letter-spacing: -.025em;
+    }
+    .chart-note {
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .chart-card > .bar-chart,
+    .chart-card > .rank-chart,
+    .chart-card > .bullet-chart,
+    .chart-card > .stacked-chart {
+      flex: 1 1 auto;
+    }
+    .ops-block-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 20px 0 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    .ops-block-head h4 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.03em;
+    }
+    .ops-block-head p {
+      max-width: 560px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+      text-align: right;
+    }
+    .ops-judgment-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .ops-judgment-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 13px 14px;
+      background: linear-gradient(180deg, rgba(15,118,110,.06), rgba(255,255,255,0) 46%), var(--paper);
+    }
+    .ops-judgment-card span {
+      display: inline-flex;
+      margin-bottom: 7px;
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .ops-judgment-card strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+    .ops-judgment-card p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .keyword-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .keyword-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent, #0f766e);
+      border-radius: 10px;
+      padding: 13px 14px;
+      background: var(--paper);
+    }
+    .keyword-card.test { border-left-color: var(--amber, #d97706); }
+    .keyword-card.guard { border-left-color: var(--risk, #ef4444); }
+    .keyword-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+    .keyword-card-head span {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: rgba(15,118,110,.1);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .keyword-card.test .keyword-card-head span {
+      background: rgba(217,119,6,.12);
+      color: var(--amber, #b45309);
+    }
+    .keyword-card.guard .keyword-card-head span {
+      background: rgba(239,68,68,.12);
+      color: var(--risk, #dc2626);
+    }
+    .keyword-card-head b {
+      color: var(--ink);
+      font-size: 16px;
+      white-space: nowrap;
+    }
+    .keyword-card h5 {
+      margin: 0 0 9px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+    .keyword-card dl {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 6px 8px;
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .keyword-card dt {
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .keyword-card dd {
+      min-width: 0;
+      margin: 0;
+      color: var(--ink);
+    }
+    .deal-exec-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .deal-exec-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      overflow: hidden;
+    }
+    .deal-exec-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(90deg, rgba(15,118,110,.1), rgba(245,158,11,.09));
+      border-bottom: 1px solid var(--line);
+    }
+    .deal-exec-top span,
+    .deal-exec-top b {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+    .deal-exec-top span {
+      background: rgba(15,118,110,.12);
+      color: var(--accent-strong);
+    }
+    .deal-exec-top b {
+      background: rgba(255,255,255,.76);
+      color: var(--muted);
+    }
+    .deal-title-compare {
+      display: grid;
+      grid-template-columns: minmax(0, .96fr) 28px minmax(0, 1.04fr);
+      gap: 12px;
+      align-items: stretch;
+      padding: 14px;
+    }
+    .deal-title-compare > div {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 12px;
+      background: var(--paper-strong);
+    }
+    .deal-title-compare > div.recommended {
+      border-color: rgba(15,118,110,.35);
+      background: rgba(15,118,110,.06);
+    }
+    .deal-title-compare small {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .deal-title-compare p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+    .deal-title-compare i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-strong);
+      font-style: normal;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .deal-exec-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(280px, .94fr);
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
+    .deal-exec-reason,
+    .deal-exec-boundary {
+      min-width: 0;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .deal-exec-reason span,
+    .deal-exec-boundary span {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .deal-exec-reason strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .deal-signal-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .deal-signal-row em {
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(15,118,110,.1);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 800;
+    }
+    .deal-exec-boundary p {
+      margin: 0 0 6px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .deal-exec-boundary p:last-child {
+      margin-bottom: 0;
+    }
+    .deal-exec-boundary strong {
+      color: var(--ink);
+    }
+    .ops-support-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .ops-support-wide {
+      grid-column: 1 / -1;
+    }
+    .ops-support-card {
+      min-width: 0;
+    }
+    .ops-support-card h3 {
+      margin-bottom: 6px;
+    }
+    .ops-card-lead {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .ops-card-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .sku-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .ops-info-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(15,118,110,.05), rgba(255,255,255,0) 48%), var(--paper);
+    }
+    .ops-info-head {
+      display: grid;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .ops-info-head span {
+      display: inline-flex;
+      width: max-content;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(15,118,110,.1);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .ops-info-head b {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .ops-info-card > strong {
+      display: block;
+      min-height: 46px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.42;
+      letter-spacing: -.02em;
+    }
+    .ops-info-body {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .ops-info-body p {
+      margin: 0;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .ops-info-body small,
+    .kpi-review-body small {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .price-pref-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .price-pref-card {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent, #0f766e);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--paper);
+    }
+    .price-pref-card.dianping {
+      border-left-color: var(--amber, #d97706);
+    }
+    .price-pref-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .price-pref-card strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1.1;
+      letter-spacing: -.04em;
+    }
+    .price-pref-card p {
+      margin: 8px 0 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .price-buckets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .price-buckets em {
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: var(--paper-strong);
+      color: var(--muted);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 800;
+    }
+    .kpi-review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .kpi-review-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--paper);
+    }
+    .kpi-review-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .kpi-review-head strong {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .kpi-review-head span {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(15,118,110,.1);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .kpi-review-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 24px minmax(0, 1fr);
+      gap: 8px;
+      align-items: stretch;
+    }
+    .kpi-review-body p {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 10px;
+      background: var(--paper-strong);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .kpi-review-body p.target {
+      border-color: rgba(15,118,110,.26);
+      background: rgba(15,118,110,.06);
+    }
+    .kpi-review-body i {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-strong);
+      font-style: normal;
+      font-weight: 900;
+    }
+    .risk-rule-list {
+      display: grid;
+      gap: 8px;
+    }
+    .risk-rule-card {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--paper);
+    }
+    .risk-rule-card b {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: rgba(239,68,68,.1);
+      color: var(--risk, #dc2626);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .risk-rule-card strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .risk-rule-card p {
+      margin: 3px 0 0;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .svg-chart {
+      display: block;
+      width: 100%;
+      height: 200px;
+      overflow: visible;
+    }
+    .chart-axis { fill: var(--muted); font-size: 10px; font-weight: 750; }
+    .chart-value { fill: var(--ink); font-size: 10px; font-weight: 850; }
+    .bar-chart, .rank-chart, .bullet-chart, .stacked-chart { display: grid; gap: 10px; }
+    .bar-row, .rank-row {
+      display: grid;
+      grid-template-columns: minmax(84px, 1fr) minmax(120px, 1.45fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .bar-label strong, .rank-name strong { display: block; font-size: 12px; line-height: 1.35; }
+    .bar-label span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .bar-row b, .rank-values b {
+      color: var(--ink);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .bar-track, .rank-bars, .bullet-track {
+      position: relative;
+      overflow: hidden;
+      min-height: 10px;
+      border-radius: 999px;
+      background: var(--track, rgba(15,23,42,.08));
+    }
+    .bar-track i, .rank-bars i, .bullet-track i {
+      display: block;
+      height: 10px;
+      border-radius: inherit;
+    }
+    .rank-bars {
+      display: grid;
+      gap: 4px;
+      background: transparent;
+    }
+    .rank-bars i { background: currentColor; }
+    .rank-name {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+    .rank-name span {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--chip, rgba(37,99,235,.1));
+      color: var(--accent-strong, #1d4ed8);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .rank-values span { display: block; color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .bar-good { color: var(--green); background: linear-gradient(90deg, var(--green), #34d399); }
+    .bar-warn { color: var(--amber, #f59e0b); background: linear-gradient(90deg, var(--amber, #f59e0b), #fbbf24); }
+    .bar-bad { color: var(--risk, #ef4444); background: linear-gradient(90deg, var(--risk, #ef4444), #fb7185); }
+    .bullet-row { display: grid; gap: 8px; }
+    .bullet-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .bullet-head span { color: var(--muted); font-size: 11px; }
+    .bullet-track {
+      min-height: 14px;
+      overflow: visible;
+      background: var(--track, rgba(15,23,42,.08));
+    }
+    .bullet-track .bullet-excellent {
+      position: absolute;
+      inset: 0 auto 0 0;
+      height: 14px;
+      background: rgba(16,185,129,.13);
+    }
+    .bullet-track i:not(.bullet-excellent) {
+      position: absolute;
+      inset: 3px auto 3px 0;
+      height: auto;
+    }
+    .bullet-track em {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--slate-900, var(--ink));
+    }
+    .bullet-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .stacked-bar {
+      display: flex;
+      overflow: hidden;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--track, rgba(15,23,42,.08));
+    }
+    .stacked-bar i { display: block; min-width: 2px; }
+    .stacked-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .stacked-legend b {
+      display: inline-flex;
+      width: 10px;
+      height: 10px;
+      margin-right: 6px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+    .audience-panel {
+      display: grid;
+      gap: 14px;
+    }
+    .audience-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .audience-metric {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+    .audience-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .audience-metric strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+    .audience-metric em {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+      line-height: 1.5;
+    }
+    .audience-age-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .age-tile {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .age-tile div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .age-tile span {
+      color: #334155;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .age-tile strong {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1;
+    }
+    .age-tile i {
+      display: block;
+      overflow: hidden;
+      height: 8px;
+      margin-top: 9px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .age-tile b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--amber), #fbbf24);
+    }
+    .age-tile.is-strong b {
+      background: linear-gradient(90deg, var(--accent), #2dd4bf);
+    }
+    .promo-efficiency-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .promo-period-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .promo-period-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .promo-period-card.is-risk {
+      border-color: rgba(239,68,68,.22);
+      background: linear-gradient(180deg, rgba(254,242,242,.75), #fff);
+    }
+    .promo-period-card.is-good {
+      border-color: rgba(15,118,110,.22);
+      background: linear-gradient(180deg, rgba(236,253,245,.7), #fff);
+    }
+    .period-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .period-head span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .period-head strong {
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+    .period-sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .metric-strip {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .metric-strip span {
+      color: #334155;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .metric-strip i {
+      display: block;
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .metric-strip b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #2dd4bf);
+    }
+    .metric-strip.daily-spend-strip b {
+      background: linear-gradient(90deg, var(--cyan), #38bdf8);
+    }
+    .metric-strip.cpo-strip b {
+      background: linear-gradient(90deg, var(--amber), #fbbf24);
+    }
+    .metric-strip strong {
+      color: var(--ink);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .promo-efficiency-note {
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .promo-efficiency-note strong {
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .competitor-exec-panel {
+      display: grid;
+      gap: 10px;
+    }
+    .exec-threat-decision {
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 12px;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(254,242,242,.78), #ffffff 62%);
+    }
+    .exec-threat-decision span {
+      color: var(--risk);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .exec-threat-decision strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.32;
+      letter-spacing: -.03em;
+    }
+    .exec-threat-decision p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .exec-threat-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .exec-threat-metrics div {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .exec-threat-metrics span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .exec-threat-metrics strong {
+      display: block;
+      overflow: hidden;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .exec-threat-note {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .exec-threat-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .exec-threat-card {
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 10px;
+      padding: 10px;
+      background: linear-gradient(180deg, rgba(254,242,242,.72), #fff);
+    }
+    .exec-threat-card span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .exec-threat-card strong {
+      display: block;
+      overflow: hidden;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .exec-threat-card em {
+      display: block;
+      overflow: hidden;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-style: normal;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .exec-threat-list {
+      display: grid;
+      gap: 7px;
+    }
+    .exec-threat-row {
+      display: grid;
+      grid-template-columns: 26px minmax(110px, .9fr) minmax(110px, 1fr) 58px;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: #ffffff;
+    }
+    .exec-threat-row > span {
+      display: grid;
+      width: 24px;
+      height: 24px;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(37,99,235,.1);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .exec-threat-row strong {
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .exec-threat-bars {
+      display: grid;
+      gap: 4px;
+    }
+    .exec-threat-bars i {
+      display: block;
+      overflow: hidden;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .exec-threat-bars b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+    }
+    .exec-threat-bars b.flow { background: linear-gradient(90deg, var(--accent), #38bdf8); }
+    .exec-threat-bars b.transfer { background: linear-gradient(90deg, var(--risk), #fb7185); }
+    .exec-threat-bars b.intensity { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+    .exec-threat-row em {
+      justify-self: end;
+      border-radius: 999px;
+      padding: 5px 7px;
+      background: #f8fafc;
+      color: #334155;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .competitor-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .competitor-priority {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .competitor-priority-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .competitor-priority-card.is-critical {
+      border-color: rgba(239,68,68,.24);
+      background: linear-gradient(180deg, rgba(254,242,242,.72), #fff);
+    }
+    .competitor-priority-card.is-high {
+      border-color: rgba(245,158,11,.25);
+      background: linear-gradient(180deg, rgba(255,251,235,.78), #fff);
+    }
+    .competitor-priority-card.is-watch {
+      border-color: rgba(37,99,235,.18);
+      background: linear-gradient(180deg, rgba(239,246,255,.74), #fff);
+    }
+    .competitor-priority-card span,
+    .competitor-name em {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      font-style: normal;
+    }
+    .competitor-priority-card strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: -.03em;
+    }
+    .competitor-priority-card em {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-style: normal;
+    }
+    .competitor-priority-card div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .competitor-priority-card b {
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(15,23,42,.06);
+      color: #334155;
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .competitor-compare-wrap {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .competitor-compare-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+    .competitor-compare-head strong {
+      color: var(--ink);
+      font-size: 14px;
+      letter-spacing: -.02em;
+    }
+    .competitor-compare-head span {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+    }
+    .competitor-compare-list {
+      display: grid;
+      gap: 8px;
+    }
+    .competitor-compare-row {
+      display: grid;
+      grid-template-columns: minmax(250px, .9fr) minmax(320px, 1.45fr) 74px;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .competitor-compare-row.is-critical {
+      border-color: rgba(239,68,68,.2);
+      background: linear-gradient(90deg, rgba(254,242,242,.72), #fff 48%);
+    }
+    .competitor-compare-row.is-high {
+      border-color: rgba(245,158,11,.22);
+      background: linear-gradient(90deg, rgba(255,251,235,.74), #fff 48%);
+    }
+    .compare-name {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .compare-name > span {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .competitor-compare-row.is-critical .compare-name > span {
+      background: rgba(239,68,68,.12);
+      color: var(--risk);
+    }
+    .competitor-compare-row.is-high .compare-name > span {
+      background: rgba(245,158,11,.14);
+      color: #b45309;
+    }
+    .compare-name strong {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .compare-name em {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .compare-bars {
+      display: grid;
+      gap: 7px;
+    }
+    .compare-bar {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 58px;
+      gap: 8px;
+      align-items: center;
+    }
+    .compare-bar span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .compare-bar i {
+      display: block;
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .compare-bar b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+    }
+    .compare-bar b.flow { background: linear-gradient(90deg, var(--accent), #38bdf8); }
+    .compare-bar b.transfer { background: linear-gradient(90deg, var(--risk), #fb7185); }
+    .compare-bar b.intensity { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+    .compare-bar strong {
+      color: var(--ink);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .compare-pressure {
+      display: grid;
+      place-items: center;
+      min-height: 62px;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    .compare-pressure span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .compare-pressure strong {
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+    .keyword-intent-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .keyword-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .keyword-summary-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .keyword-summary-card.is-good {
+      border-color: rgba(15,118,110,.24);
+      background: linear-gradient(180deg, rgba(236,253,245,.72), #fff);
+    }
+    .keyword-summary-card.is-warn {
+      border-color: rgba(245,158,11,.24);
+      background: linear-gradient(180deg, rgba(255,251,235,.78), #fff);
+    }
+    .keyword-summary-card.is-risk {
+      border-color: rgba(239,68,68,.24);
+      background: linear-gradient(180deg, rgba(254,242,242,.72), #fff);
+    }
+    .keyword-summary-card span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .keyword-summary-card strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 19px;
+      line-height: 1.2;
+      letter-spacing: -.03em;
+    }
+    .keyword-summary-card em {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+      line-height: 1.4;
+    }
+    .keyword-summary-card b {
+      display: inline-flex;
+      margin-top: 9px;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(15,23,42,.06);
+      color: #334155;
+      font-size: 11px;
+      line-height: 1;
+    }
+    .keyword-intent-list {
+      display: grid;
+      gap: 8px;
+    }
+    .keyword-intent-row {
+      display: grid;
+      grid-template-columns: minmax(230px, .9fr) minmax(320px, 1.45fr) 122px;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .keyword-intent-row.is-good {
+      border-color: rgba(15,118,110,.2);
+      background: linear-gradient(90deg, rgba(236,253,245,.65), #fff 48%);
+    }
+    .keyword-intent-row.is-warn {
+      border-color: rgba(245,158,11,.22);
+      background: linear-gradient(90deg, rgba(255,251,235,.7), #fff 48%);
+    }
+    .keyword-intent-row.is-risk {
+      border-color: rgba(239,68,68,.18);
+      background: linear-gradient(90deg, rgba(254,242,242,.62), #fff 48%);
+    }
+    .keyword-intent-name {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .keyword-intent-name > span {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .keyword-intent-row.is-good .keyword-intent-name > span {
+      background: rgba(15,118,110,.12);
+      color: var(--accent);
+    }
+    .keyword-intent-row.is-warn .keyword-intent-name > span {
+      background: rgba(245,158,11,.14);
+      color: #b45309;
+    }
+    .keyword-intent-row.is-risk .keyword-intent-name > span {
+      background: rgba(239,68,68,.12);
+      color: var(--risk);
+    }
+    .keyword-intent-name strong {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .keyword-intent-name em {
+      display: block;
+      overflow: hidden;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-style: normal;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .keyword-intent-bars {
+      display: grid;
+      gap: 7px;
+    }
+    .keyword-intent-bar {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 58px;
+      gap: 8px;
+      align-items: center;
+    }
+    .keyword-intent-bar span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .keyword-intent-bar i {
+      display: block;
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .keyword-intent-bar b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+    }
+    .keyword-intent-bar b.search { background: linear-gradient(90deg, var(--accent), #38bdf8); }
+    .keyword-intent-bar b.buy { background: linear-gradient(90deg, var(--risk), #fb7185); }
+    .keyword-intent-bar b.tendency { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+    .keyword-intent-bar strong {
+      color: var(--ink);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .keyword-decision {
+      display: grid;
+      gap: 5px;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f8fafc;
+    }
+    .keyword-decision span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .keyword-decision strong {
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .competitor-matrix-wrap {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .competitor-matrix-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .competitor-matrix-head strong {
+      color: var(--ink);
+      font-size: 14px;
+      letter-spacing: -.02em;
+    }
+    .competitor-matrix-head span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+    }
+    .competitor-matrix {
+      display: block;
+      width: 100%;
+      height: 300px;
+    }
+    .matrix-axis {
+      fill: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .matrix-zone {
+      fill: var(--risk);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .matrix-dot {
+      stroke: #ffffff;
+      stroke-width: 3;
+      fill: var(--accent);
+      filter: drop-shadow(0 8px 14px rgba(15,23,42,.14));
+    }
+    .matrix-dot.is-critical { fill: var(--risk); }
+    .matrix-dot.is-high { fill: var(--amber); }
+    .matrix-dot.is-watch { fill: var(--accent); }
+    .matrix-rank {
+      fill: #ffffff;
+      font-size: 12px;
+      font-weight: 950;
+      pointer-events: none;
+    }
+    .competitor-matrix-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .competitor-matrix-legend span {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 8px;
+      background: rgba(37,99,235,.08);
+      color: #334155;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .competitor-matrix-legend span.is-critical { background: rgba(239,68,68,.1); }
+    .competitor-matrix-legend span.is-high { background: rgba(245,158,11,.12); }
+    .competitor-matrix-legend b {
+      color: var(--ink);
+      font-weight: 950;
+    }
+    .competitor-list {
+      display: grid;
+      gap: 8px;
+    }
+    .competitor-row {
+      display: grid;
+      grid-template-columns: minmax(220px, .85fr) minmax(280px, 1.55fr);
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .competitor-name {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .competitor-name > span {
+      display: grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--chip);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .competitor-row.is-critical .competitor-name > span {
+      background: rgba(239,68,68,.12);
+      color: var(--risk);
+    }
+    .competitor-row.is-high .competitor-name > span {
+      background: rgba(245,158,11,.14);
+      color: #b45309;
+    }
+    .competitor-name strong {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .competitor-bars {
+      display: grid;
+      gap: 8px;
+    }
+    .competitor-bars div {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 54px;
+      gap: 8px;
+      align-items: center;
+    }
+    .competitor-bars span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .competitor-bars i {
+      display: block;
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .competitor-bars b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #38bdf8);
+    }
+    .competitor-bars div:nth-child(2) b {
+      background: linear-gradient(90deg, var(--risk), #fb7185);
+    }
+    .competitor-bars strong {
+      color: var(--ink);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .page-heat-panel {
+      display: grid;
+      gap: 12px;
+    }
+    .page-heat-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .heat-highlight-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #ffffff;
+    }
+    .heat-highlight-card.is-good {
+      border-color: rgba(15,118,110,.24);
+      background: linear-gradient(180deg, rgba(236,253,245,.72), #fff);
+    }
+    .heat-highlight-card.is-warn {
+      border-color: rgba(245,158,11,.24);
+      background: linear-gradient(180deg, rgba(255,251,235,.78), #fff);
+    }
+    .heat-highlight-card.is-risk {
+      border-color: rgba(239,68,68,.24);
+      background: linear-gradient(180deg, rgba(254,242,242,.76), #fff);
+    }
+    .heat-highlight-card span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .heat-highlight-card strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.25;
+      letter-spacing: -.03em;
+    }
+    .heat-highlight-card em {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-style: normal;
+      line-height: 1.45;
+    }
+    .heat-module-list {
+      display: grid;
+      gap: 8px;
+    }
+    .heat-module-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .8fr) minmax(180px, 1.35fr) minmax(220px, 1fr);
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #ffffff;
+    }
+    .heat-name strong {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .heat-name span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+    .heat-track {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--track);
+    }
+    .heat-track b {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #2dd4bf);
+    }
+    .heat-module-row.is-warn .heat-track b {
+      background: linear-gradient(90deg, var(--amber), #fbbf24);
+    }
+    .heat-module-row.is-risk .heat-track b {
+      background: linear-gradient(90deg, var(--risk), #fb7185);
+    }
+    .heat-track i {
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      width: 2px;
+      border-radius: 999px;
+      background: var(--ink);
+      opacity: .48;
+    }
+    .heat-values b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .heat-values span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    @media (max-width: 920px) {
+      .viz-grid, .viz-grid.four, .viz-grid.three, .viz-grid.focus { grid-template-columns: 1fr; }
+      .bar-row, .rank-row { grid-template-columns: 1fr; gap: 6px; }
+      .audience-metrics,
+      .audience-age-grid,
+      .promo-period-grid,
+      .exec-threat-summary,
+      .exec-threat-metrics,
+      .exec-threat-row,
+      .competitor-priority,
+      .competitor-row,
+      .competitor-compare-row,
+      .keyword-summary-grid,
+      .ops-judgment-grid,
+      .keyword-card-grid,
+      .ops-support-grid,
+      .sku-grid,
+      .kpi-review-grid,
+      .keyword-intent-row,
+      .page-heat-highlights,
+      .heat-module-row { grid-template-columns: 1fr; }
+      .ops-support-wide { grid-column: auto; }
+      .ops-block-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .ops-block-head p { text-align: left; }
+      .deal-title-compare,
+      .deal-exec-body {
+        grid-template-columns: 1fr;
+      }
+      .deal-title-compare i {
+        justify-content: flex-start;
+        height: 18px;
+        transform: rotate(90deg);
+      }
+      .kpi-review-body {
+        grid-template-columns: 1fr;
+      }
+      .kpi-review-body i {
+        justify-content: flex-start;
+        height: 14px;
+        transform: rotate(90deg);
+      }
+      .keyword-decision {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .competitor-compare-head {
+        display: grid;
+      }
+      .competitor-compare-head span {
+        text-align: left;
+      }
+      .compare-pressure {
+        display: flex;
+        justify-content: space-between;
+        min-height: 0;
+        padding: 10px;
+      }
+      .competitor-matrix-head {
+        display: grid;
+      }
+      .competitor-matrix-head span {
+        text-align: left;
+      }
+      .competitor-matrix {
+        height: 260px;
+      }
+      .svg-chart { height: 194px; }
+    }
+
+    footer { padding: 18px 0 32px; color: var(--muted); font-size: 12px; }
+    @media (max-width: 920px) {
+      nav .wrap { grid-template-columns: repeat(4, max-content); overflow-x: auto; }
+      nav a { min-width: max-content; }
+      .hero { min-height: auto; }
+      .hero-grid, .decision-layout, .decision-list, .grid.two, .grid.three, .grid.four, .module-summary, .copy-grid { grid-template-columns: 1fr; }
+      .decision-layout .priority-viz { grid-column: auto; }
+      .section-title { align-items: flex-start; flex-direction: column; }
+      .section-title small { text-align: left; }
+      .section-title h2 { padding-left: 0; }
+      th, td { min-width: 132px; }
+      .wrap { width: min(100% - 24px, var(--page-width)); }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 18px, var(--page-width)); }
+      .hero {
+        padding: 18px 14px 16px;
+        border-radius: 22px;
+      }
+      .hero-grid { gap: 14px; }
+      .eyebrow { font-size: 11px; letter-spacing: .06em; }
+      h1 { font-size: clamp(24px, 8.6vw, 30px); line-height: 1.08; }
+      h2 { font-size: clamp(21px, 7vw, 26px); }
+      h3 { font-size: 18px; }
+      .lead { font-size: 13px; line-height: 1.68; }
+      .meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .pill {
+        width: 100%;
+        white-space: normal;
+        border-radius: 12px;
+        padding: 9px 10px;
+        line-height: 1.45;
+      }
+      nav .wrap { gap: 6px; padding: 6px 0 2px; }
+      nav a {
+        border-radius: 9px;
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      section { padding: 14px 0; scroll-margin-top: 12px; }
+      .section-title { gap: 8px; margin-bottom: 10px; }
+      .section-title::before { width: 4px; height: 18px; }
+      .section-title small { font-size: 12px; line-height: 1.55; }
+      .card, .insight-module, .verdict, .battle-card, .copy-card, details { border-radius: 14px; }
+      .card, .insight-module, .battle-card, .copy-card { padding: 13px; }
+      summary { padding: 11px 12px; font-size: 13px; }
+      .detail-body { padding: 10px 12px 12px; }
+      .decision-item {
+        border-radius: 10px;
+        padding: 10px 10px 10px 38px;
+      }
+      .decision-item::before { left: 11px; top: 10px; }
+      .decision-item strong { font-size: 14px; line-height: 1.38; }
+      .decision-item p { font-size: 12px; }
+      .kpi { font-size: 26px; }
+      .label { font-size: 12px; line-height: 1.45; }
+      .battle-card p,
+      .module-summary li,
+      p { font-size: 13px; line-height: 1.6; }
+      .table-scroll {
+        margin-inline: -2px;
+        border-radius: 12px;
+      }
+      table { border-radius: 12px; }
+      th, td {
+        min-width: 118px;
+        padding: 9px 10px;
+        font-size: 12px;
+      }
+      th:first-child, td:first-child { min-width: 98px; }
+      td strong { font-size: 15px; }
+      table.compact th,
+      table.compact td { padding: 9px 10px; font-size: 12px; }
+      .copy-grid { grid-template-columns: 1fr; }
+      .copy-card header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .copy-btn { width: 100%; justify-content: center; }
+      footer { padding: 16px 0 28px; line-height: 1.6; }
+    }
+    @media print {
+      nav { display: none; }
+      body { background: #fff; }
+      .card, .hero, .insight-module { box-shadow: none; break-inside: avoid; }
+      details { break-inside: avoid; }
+      details:not([open]) .detail-body { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <div class="hero">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <div class="eyebrow">正式完整版 · 专业经营报告</div>
+          <h1>超能玩家美团经营诊断报告</h1>
+          <p class="lead">主趋势以近 7/30/90 天经营参谋和推广中心数据为准；最新单日只采用 2026-05-19 完整日数据，当天未完整数据不纳入经营判断。</p>
+          <div class="meta">
+            <span class="pill">门店：超能玩家包间电玩switch·PS5游戏馆（新街口文化大厦店）</span>
+            <span class="pill">主周期：2026-02-19 至 2026-05-19</span>
+            <span class="pill">补充口径：竞对近14天 / 搜索7&30天 / 客群30&90天 / 昨日完整日快照</span>
+            <span class="pill">操作边界：只读分析，未修改后台</span>
+            <a class="pill" href="./03-executive-management.html">管理决策版入口</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="wrap">
+      <a href="#decision">决策摘要</a>
+      <a href="#battle">本周作战</a>
+      <a href="#search-upgrade">搜索升级</a>
+      <a href="#deep">深度洞察</a>
+      <a href="#appendix">数据附录</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="decision">
+      <div class="section-title">
+        <h2>决策摘要</h2>
+        <small>首页只保留核心结论、三项管理判断、1 张关键漏斗图和 1 张核查表。</small>
+      </div>
+      <div class="decision-layout">
+        <div class="verdict">
+          <h3>结论：基本盘不弱，转化承接漏水。</h3>
+          <p>当前不应先降价或加预算。门店有同类竞争力和真实访问基础，但用户进入详情页后仍在比较小熊、WASD、探界、宅玩咖等同类门店。优先解决首屏确定性、套餐选择效率、预约路线说明和关键词混投。</p>
+        </div>
+        <div class="decision-list">
+          <div class="decision-item"><span>最大风险</span><strong>近30天潜在顾客 4,626 人，其中 574 人去了其他门店。</strong><p>这是同类截流，不是单纯曝光不足。</p></div>
+          <div class="decision-item"><span>本周先做</span><strong>首图、套餐、词包、预约路线四件事。</strong><p>先修漏斗，再决定预算。</p></div>
+          <div class="decision-item"><span>预算判断</span><strong>近30天 CPO ¥32.86，计划日预算配置 ¥200.00。</strong><p>推广中心未返回昨日计划级消耗，不用当天未完整消耗判断是否加预算。</p></div>
+        </div>
+        <div class="viz-grid focus priority-viz">
+  <article class="chart-card">
+    <header>
+      <div>
+        <span>近30天 / 同行对比</span>
+        <h3>漏斗转化差距</h3>
+      </div>
+    </header>
+    <div class="bullet-chart" role="img" aria-label="漏斗转化差距">
+    <div class="bullet-row">
+        <div class="bullet-head"><strong>曝光访问率</strong><span>近30天，本店 vs 同行 vs 优秀</span></div>
+        <div class="bullet-track">
+          <i class="bullet-excellent" style="width:19.4%"></i>
+          <i class="bar-warn" style="width:7.5%"></i>
+          <em style="left:8.1%"></em>
+        </div>
+        <div class="bullet-legend">
+          <span>本店 7.49%</span>
+          <span>同行 8.06%</span>
+          <span>优秀 19.44%</span>
+        </div>
+      </div><div class="bullet-row">
+        <div class="bullet-head"><strong>意向转化率</strong><span>近30天，访问后下单/意向</span></div>
+        <div class="bullet-track">
+          <i class="bullet-excellent" style="width:32.7%"></i>
+          <i class="bar-bad" style="width:7.9%"></i>
+          <em style="left:16.6%"></em>
+        </div>
+        <div class="bullet-legend">
+          <span>本店 7.91%</span>
+          <span>同行 16.63%</span>
+          <span>优秀 32.67%</span>
+        </div>
+      </div>
+  </div>
+    <p class="chart-note">意向转化率明显落后同行，优先修套餐、预约和信任承接。</p>
+  </article>
+</div>
+      </div>
+      <div class="card">
+        <h3>管理层关键指标表</h3>
+        <div class="table-scroll"><table class="score-table">
+    <thead><tr><th>指标</th><th>本店值</th><th>同行/参照</th><th>阶段目标</th><th>诊断</th><th>管理含义</th></tr></thead>
+    <tbody><tr><td>曝光访问率</td><td>7.49%</td><td>8.06%</td><td>8.5%+</td><td><span class="badge warn">低于同行</span></td><td>首屏卖点、头图和标题需要重做。</td></tr>
+<tr><td>意向转化率</td><td>7.91%</td><td>16.63%</td><td>7.5%-8%</td><td><span class="badge critical">核心短板</span></td><td>套餐选择和预约确定性不足。</td></tr>
+<tr><td>广告 CPO</td><td>¥32.86</td><td>未返回同行</td><td>¥38以内</td><td><span class="badge warn">需控效</span></td><td>先拆词包止损，不先加预算。</td></tr>
+<tr><td>潜在顾客流失</td><td>574 / 4,626</td><td>未返回同行</td><td>回收2%-3%</td><td><span class="badge critical">同类截流</span></td><td>咨询、电话、收藏用户要二次承接。</td></tr>
+<tr><td>竞争力评级</td><td>S / 98</td><td>南京市同类</td><td>保持S</td><td><span class="badge good">基本盘强</span></td><td>不是缺基础流量，而是局部漏斗漏水。</td></tr></tbody>
+  </table></div>
+      </div>
+    </section>
+
+    <section id="battle">
+      <div class="section-title">
+        <h2>本周作战</h2>
+        <small>执行动作必须能回到指标，避免只做页面装饰或泛泛运营建议。</small>
+      </div>
+      <div class="grid three battle-grid">
+        <article class="battle-card">
+          <small>第一件 · 平台运营</small>
+          <h3>把美团首屏改成“为什么选你”</h3>
+          <p>如果曝光访问率修到 8.5%，按近30天曝光人数估算，可多带来约 720 个访问。</p>
+          <div class="target-line"><span class="now">7.49%</span><span class="arrow">→</span><span class="target">8.5%+</span></div>
+        </article><article class="battle-card">
+          <small>第二件 · 店长 + 前台</small>
+          <h3>把套餐改成体验、双人爆品、多人聚会三层</h3>
+          <p>如果意向转化率修到 8%，按近30天访问人数估算，可多带来约 5 个订单/意向。</p>
+          <div class="target-line"><span class="now">7.91%</span><span class="arrow">→</span><span class="target">8%+</span></div>
+        </article><article class="battle-card">
+          <small>第三件 · 投放负责人</small>
+          <h3>推广按词包止损，不再混投</h3>
+          <p>如果 CPO 压到 ¥38，按近30天广告订单估算，月度同量级可节省约 ¥0.00。</p>
+          <div class="target-line"><span class="now">¥32.86</span><span class="arrow">→</span><span class="target">¥38以内</span></div>
+        </article>
+      </div>
+      <div class="battle-support-stack">
+        <div class="card">
+          <h3>7 天执行清单</h3>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>时间</th><th>任务</th><th>具体做什么</th><th>验收</th></tr></thead>
+    <tbody><tr><td>D1</td><td>定方向</td><td>老板/店长确认：先修承接，不先降价、不盲目加预算。</td><td>确定本周只盯曝光访问率、意向转化率、CPO、潜客回收。</td></tr>
+<tr><td>D1-D2</td><td>改首屏</td><td>平台运营重做前 3 张图：独立包间、热门游戏、路线预约。</td><td>头图点击率向 1.20% 靠近。</td></tr>
+<tr><td>D2-D3</td><td>改套餐</td><td>把套餐收敛成体验、双人主爆品、三小时加时、多人聚会、工作日错峰。</td><td>意向转化率从 7.91% 提到 7.5%-8%。</td></tr>
+<tr><td>D3-D4</td><td>拆投放</td><td>精准词 60%、泛场景 25%、观察词 15%，不扩大总预算。</td><td>CPO 从 ¥32.86 向 ¥38 内压。</td></tr>
+<tr><td>D4-D5</td><td>补确定性</td><td>详情页和相册补文化大厦入口、电梯、预约、热门时段说明。</td><td>降低电话/咨询里的找路和预约顾虑。</td></tr>
+<tr><td>D5-D7</td><td>做回收</td><td>咨询、电话、收藏、浏览团购未下单用户建台账。</td><td>从 4,626 潜在顾客中拉回 2%-3%。</td></tr>
+<tr><td>D7</td><td>复盘止损</td><td>清理有点击无订单词，保留有效素材和套餐表达。</td><td>只给达标词包加量。</td></tr></tbody>
+  </table></div>
+        </div>
+        <div class="card">
+          <h3>负责人看板</h3>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>角色</th><th>负责内容</th><th>节奏</th><th>核心指标</th></tr></thead>
+    <tbody><tr><td>店长</td><td>定阈值、看日报、决定是否加预算</td><td>每天 10 分钟</td><td>曝光访问率、意向转化率、CPO</td></tr>
+<tr><td>平台运营</td><td>首图、标题、套餐、路线图、评价背书</td><td>第1周集中改完</td><td>头图点击率、商品点击后下单</td></tr>
+<tr><td>投放负责人</td><td>关键词分组、出价、无效词止损</td><td>每2天复盘</td><td>CTR、CPC、CPO、广告订单</td></tr>
+<tr><td>前台/客服</td><td>预约确认、路线解释、核销后评价、潜客回收</td><td>每天执行</td><td>咨询后下单、评价新增、低星归因</td></tr></tbody>
+  </table></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>投放闭环面板</h3>
+        <p style="margin:8px 0 14px">把计划状态、日预算配置、近30天 CPO 和关键词组动作放到同一页判断。当天未完整消耗不纳入，推广中心未返回昨日计划级消耗时显示为待补充。</p>
+        <div class="table-scroll"><table class="compact">
+    <thead><tr><th>闭环项</th><th>预算/状态</th><th>昨日花费/门店</th><th>昨日利用率/驳回</th><th>CPO/缺口</th><th>操作判断</th></tr></thead>
+    <tbody><tr><td>账户日预算配置</td><td>¥200.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>近30天 CPO ¥32.86</td><td>推广中心当前导出未返回昨日账户消耗，不能用当天未完整消耗判断预算是否耗尽。</td></tr>
+<tr><td>计划状态</td><td>1 个在线计划 / 1 个暂停计划</td><td>在线门店 1</td><td>驳回 0</td><td>计划级订单/CPO未返回</td><td>用账户消耗 + 近30天 CPO + 词包动作做控效判断。</td></tr></tbody>
+  </table></div>
+        <h4>计划级状态</h4>
+        <div class="table-scroll"><table class="compact">
+    <thead><tr><th>计划</th><th>状态</th><th>日预算配置</th><th>昨日花费</th><th>昨日预算利用率</th><th>单元/创意</th><th>动作</th></tr></thead>
+    <tbody><tr><td>智能计划020716443628</td><td><span class="tag good">运行中 / 推广中</span></td><td>¥200.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>文化（推广中）</td><td>只在精准词 CPO 达标后加量，先清理无订单泛词。</td></tr>
+<tr><td>推广计划020312174422</td><td><span class="tag neutral">运行中 / 已暂停</span></td><td>¥250.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>门店推广2026020328d（已暂停）</td><td>计划存在但单元未处于推广中，不在承接页修好前恢复消耗。</td></tr></tbody>
+  </table></div>
+      </div>
+    </section>
+
+    <section id="search-upgrade">
+      <div class="section-title">
+        <h2>近30天搜索词与团购升级</h2>
+        <small>整合手机端门店搜索词、网页端搜索洞察、客群洞察、商品洞察和第一批标题执行单。</small>
+      </div>
+      <div class="insight-stack">
+        <article class="insight-module">
+    <div class="module-head">
+      <span>手机端搜索词 + 网页端市场洞察 + 第一批执行单</span>
+      <h3>搜索词与团购标题升级</h3>
+    </div>
+    <ol class="module-summary"><li>主定位收敛为“新街口PS5/Switch包间电玩”，先抢位置词、设备词、包间词。</li><li>第一批只改 3 个团购标题和首图角标，让用户一眼看懂设备、人数、时长和场景。</li><li>“网吧”和“VR”只做边界词：不是真网吧不写网吧，没有真实VR设备不写VR。</li></ol>
+    
+  <div class="viz-grid">
+    <article class="chart-card">
+    <header>
+      <div>
+        <span>近30天交叉判断</span>
+        <h3>关键词机会优先级</h3>
+      </div>
+    </header>
+    <div class="bar-chart" role="img" aria-label="关键词机会优先级">
+    <div class="bar-row">
+        <div class="bar-label"><strong>PS5游戏馆 / PS5</strong><span>A级机会</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:96.0%"></i></div>
+        <b>96分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>Switch / Switch游戏馆</strong><span>A级机会</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:94.0%"></i></div>
+        <b>94分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>双人包间 / 包间电玩 / 开黑包间</strong><span>A级机会</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:92.0%"></i></div>
+        <b>92分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>新街口电玩 / PS5游戏馆新街口</strong><span>A级机会</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:88.0%"></i></div>
+        <b>88分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>游戏室 / 主机游戏 / 游戏厅</strong><span>B级机会</span></div>
+        <div class="bar-track"><i class="bar-warn" style="width:82.0%"></i></div>
+        <b>82分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>超级马里奥 / 马里奥派对 / 大乱…</strong><span>B级机会</span></div>
+        <div class="bar-track"><i class="bar-warn" style="width:80.0%"></i></div>
+        <b>80分</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>VR</strong><span>C级机会</span></div>
+        <div class="bar-track"><i class="bar-bad" style="width:52.0%"></i></div>
+        <b>52分</b>
+      </div>
+  </div>
+    <p class="chart-note">分数越高，越应该优先写进门店副标题、团购标题和首图。</p>
+  </article>
+    <article class="chart-card">
+    <header>
+      <div>
+        <span>门店搜索词前8名</span>
+        <h3>手机端热搜结构</h3>
+      </div>
+    </header>
+    <div class="bar-chart" role="img" aria-label="手机端热搜结构">
+    <div class="bar-row">
+        <div class="bar-label"><strong>网吧</strong><span>第1名</span></div>
+        <div class="bar-track"><i class="bar-warn" style="width:100.0%"></i></div>
+        <b>搜索量 526</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>电玩</strong><span>第2名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:53.2%"></i></div>
+        <b>搜索量 280</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>网吧双人包间</strong><span>第3名</span></div>
+        <div class="bar-track"><i class="bar-warn" style="width:48.1%"></i></div>
+        <b>搜索量 253</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>switch</strong><span>第4名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:47.1%"></i></div>
+        <b>搜索量 248</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>PS5游戏馆</strong><span>第5名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:38.8%"></i></div>
+        <b>搜索量 204</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>ps5</strong><span>第6名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:31.7%"></i></div>
+        <b>搜索量 167</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>ps5游戏店</strong><span>第7名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:30.0%"></i></div>
+        <b>搜索量 158</b>
+      </div><div class="bar-row">
+        <div class="bar-label"><strong>SWITCH游戏馆</strong><span>第8名</span></div>
+        <div class="bar-track"><i class="bar-good" style="width:19.6%"></i></div>
+        <b>搜索量 103</b>
+      </div>
+  </div>
+    <p class="chart-note">用户真实搜索语言偏“网吧、电玩、PS5、Switch、双人包间”，但“网吧”只能作为口语线索。</p>
+  </article>
+  </div>
+  <div class="ops-block-head">
+    <h4>一句话经营判断</h4>
+    <p>先看结果和原因，明确本轮为什么要改搜索词和团购标题。</p>
+  </div>
+  <div class="ops-judgment-grid">
+  <article class="ops-judgment-card">
+    <span>搜索定位</span>
+    <strong>升级为“新街口PS5/Switch包间电玩”</strong>
+    <p>用户不是只搜“电玩”，还会带位置、设备、包间词；标题要同时承接这三类搜索。</p>
+  </article><article class="ops-judgment-card">
+    <span>商品问题</span>
+    <strong>有爆款，但缺低门槛入口</strong>
+    <p>已有成交爆发款，但部分高价团购没有把人数、时长、设备和权益说清楚。</p>
+  </article><article class="ops-judgment-card">
+    <span>价格带判断</span>
+    <strong>美团主打60~99元，点评承接87~150元</strong>
+    <p>154元商品应做升级款表达，不适合承担搜索入口和低门槛转化职责。</p>
+  </article><article class="ops-judgment-card">
+    <span>数据边界</span>
+    <strong>本轮看“搜索词 + 商品洞察 + 客群”交叉判断</strong>
+    <p>手机端机会商品词为空，不能单看一处数据；需用门店热搜、网页搜索、网页商品和客群洞察互相校准。</p>
+  </article>
+</div>
+  <div class="ops-block-head">
+    <h4>关键词机会短表</h4>
+    <p>A 级先改标题和首图，B 级做小范围实验，C 级只做边界观察。</p>
+  </div>
+  <div class="keyword-card-grid">
+  <article class="keyword-card strong">
+      <div class="keyword-card-head">
+        <span>A级</span>
+        <b>96分</b>
+      </div>
+      <h5>PS5游戏馆 / PS5</h5>
+      <dl>
+        <dt>结果</dt><dd>优先进入标题和首图</dd>
+        <dt>原因</dt><dd>手机端有明确搜索，网页端有交易信号，优先放进标题和首图。</dd>
+        <dt>下一步</dt><dd>门店副标题和主力团购商品标题前置“新街口PS5游戏馆”；商品详情首屏明确PS5型号/手柄数量/包间人数。</dd>
+      </dl>
+    </article><article class="keyword-card strong">
+      <div class="keyword-card-head">
+        <span>A级</span>
+        <b>94分</b>
+      </div>
+      <h5>Switch / Switch游戏馆</h5>
+      <dl>
+        <dt>结果</dt><dd>优先进入标题和首图</dd>
+        <dt>原因</dt><dd>手机端有明确搜索，网页端有交易信号，优先放进标题和首图。</dd>
+        <dt>下一步</dt><dd>统一用标准拼写“Switch”，主力团购商品标题写“PS5/Switch”，不要主动写SWTICH/swtich。</dd>
+      </dl>
+    </article><article class="keyword-card strong">
+      <div class="keyword-card-head">
+        <span>A级</span>
+        <b>92分</b>
+      </div>
+      <h5>双人包间 / 包间电玩 / 开黑包间</h5>
+      <dl>
+        <dt>结果</dt><dd>优先进入标题和首图</dd>
+        <dt>原因</dt><dd>手机端有明确搜索，网页端有交易信号，优先放进标题和首图。</dd>
+        <dt>下一步</dt><dd>标题顺序改为“新街口 + PS5/Switch + 双人包间 + 时长/人数 + 场景”。</dd>
+      </dl>
+    </article><article class="keyword-card strong">
+      <div class="keyword-card-head">
+        <span>A级</span>
+        <b>88分</b>
+      </div>
+      <h5>新街口电玩 / PS5游戏馆新街口</h5>
+      <dl>
+        <dt>结果</dt><dd>优先进入标题和首图</dd>
+        <dt>原因</dt><dd>手机端有明确搜索，网页端有交易信号，优先放进标题和首图。</dd>
+        <dt>下一步</dt><dd>把“新街口”前移到商品标题和短描述，不只放在门店括号里。</dd>
+      </dl>
+    </article><article class="keyword-card test">
+      <div class="keyword-card-head">
+        <span>B级</span>
+        <b>82分</b>
+      </div>
+      <h5>游戏室 / 主机游戏 / 游戏厅</h5>
+      <dl>
+        <dt>结果</dt><dd>作为补充场景词观察</dd>
+        <dt>原因</dt><dd>交易飙升：游戏室 搜索人气230 / 点击人气149 / 交易指数22 / +450%。</dd>
+        <dt>下一步</dt><dd>详情页和标题补“主机游戏包间/游戏室”，但不要弱化PS5/Switch核心词。</dd>
+      </dl>
+    </article><article class="keyword-card test">
+      <div class="keyword-card-head">
+        <span>B级</span>
+        <b>80分</b>
+      </div>
+      <h5>超级马里奥 / 马里奥派对 / 大乱斗 / 胡闹厨房 / 双人成行</h5>
+      <dl>
+        <dt>结果</dt><dd>做玩法标题小实验</dd>
+        <dt>原因</dt><dd>玩法词能解释用户为什么买，适合做小范围标题实验。</dd>
+        <dt>下一步</dt><dd>做IP玩法款标题实验，明确写“马里奥派对/马里奥赛车/大乱斗/胡闹厨房/双人成行”。</dd>
+      </dl>
+    </article><article class="keyword-card guard">
+      <div class="keyword-card-head">
+        <span>C级</span>
+        <b>52分</b>
+      </div>
+      <h5>VR</h5>
+      <dl>
+        <dt>结果</dt><dd>只观察，不进主标题</dd>
+        <dt>原因</dt><dd>市场有热度，但本店未证明真实承接，不能直接写进主标题。</dd>
+        <dt>下一步</dt><dd>仅在真实有VR设备时单独建团购商品测试；没有则不要写进PS5/Switch标题。</dd>
+      </dl>
+    </article>
+</div>
+  <div class="ops-block-head">
+    <h4>第一批团购标题执行单</h4>
+    <p>首批只改“标题 + 首图角标 + 详情证明点”，价格、库存、可售时段和推广预算暂不动。</p>
+  </div>
+  <div class="deal-exec-list">
+  <article class="deal-exec-card">
+      <div class="deal-exec-top">
+        <span>第1个先改</span>
+        <b>待确认</b>
+      </div>
+      <div class="deal-title-compare">
+        <div>
+          <small>当前标题</small>
+          <p>多人聚会丨6人超大包间·1小时 ｜ 可叠加丨双主机PS5NS</p>
+        </div>
+        <i aria-hidden="true">→</i>
+        <div class="recommended">
+          <small>建议标题</small>
+          <p>新街口6人PS5/Switch双主机包间1小时｜聚会开黑</p>
+        </div>
+      </div>
+      <div class="deal-exec-body">
+        <div class="deal-exec-reason">
+          <span>为什么改</span>
+          <strong>吃“新街口+PS5/Switch+包间+聚会”组合词，保留当前¥84主成交优势。</strong>
+          <div class="deal-signal-row"><em>交易人气第15名</em><em>交易指数3,376</em><em>均价￥84</em><em>交易变化25.97%</em><em>热度996</em></div>
+        </div>
+        <div class="deal-exec-boundary">
+          <span>本轮边界</span>
+          <p><strong>首图：</strong>新街口｜PS5/Switch｜6人包间｜双主机</p>
+          <p><strong>证明：</strong>6人容量、双主机PS5/Switch、独立包间、可叠加规则</p>
+          <p><strong>不改：</strong>价格、库存、可售时段、推广预算</p>
+          <p><strong>复盘：</strong>7天后搜索词/交易指数无提升则回滚原标题</p>
+        </div>
+      </div>
+    </article><article class="deal-exec-card">
+      <div class="deal-exec-top">
+        <span>第2个先改</span>
+        <b>待确认</b>
+      </div>
+      <div class="deal-title-compare">
+        <div>
+          <small>当前标题</small>
+          <p>2-4人聚会包间丨2小时双主机超值套餐丨闺蜜约会基友开黑</p>
+        </div>
+        <i aria-hidden="true">→</i>
+        <div class="recommended">
+          <small>建议标题</small>
+          <p>新街口2-4人PS5/Switch双主机包间2小时｜约会开黑</p>
+        </div>
+      </div>
+      <div class="deal-exec-body">
+        <div class="deal-exec-reason">
+          <span>为什么改</span>
+          <strong>服务点评87~150升级价位，同时减少高价造成的理解成本。</strong>
+          <div class="deal-signal-row"><em>交易人气第18名</em><em>交易指数2,312</em><em>均价￥154</em><em>交易变化32.27%</em><em>热度996</em></div>
+        </div>
+        <div class="deal-exec-boundary">
+          <span>本轮边界</span>
+          <p><strong>首图：</strong>新街口｜PS5/Switch｜2-4人包间｜双主机</p>
+          <p><strong>证明：</strong>2-4人容量、2小时权益、双主机/双屏或同玩方式、人均价解释</p>
+          <p><strong>不改：</strong>价格、库存、可售时段、推广预算</p>
+          <p><strong>复盘：</strong>7天后搜索词/交易指数无提升则回滚原标题</p>
+        </div>
+      </div>
+    </article><article class="deal-exec-card">
+      <div class="deal-exec-top">
+        <span>第3个先改</span>
+        <b>待确认</b>
+      </div>
+      <div class="deal-title-compare">
+        <div>
+          <small>当前标题</small>
+          <p>【闺蜜基友】1-3人包1小时 ｜ 多人必玩马里奥排队胡闹厨房</p>
+        </div>
+        <i aria-hidden="true">→</i>
+        <div class="recommended">
+          <small>建议标题</small>
+          <p>新街口1-3人PS5/Switch包间1小时｜马里奥派对/胡闹厨房</p>
+        </div>
+      </div>
+      <div class="deal-exec-body">
+        <div class="deal-exec-reason">
+          <span>为什么改</span>
+          <strong>作为第一批小范围对照测试款，承接超级马里奥、胡闹厨房、闺蜜约会。</strong>
+          <div class="deal-signal-row"><em>交易人气第25名</em><em>交易指数1,357</em><em>均价￥65</em><em>交易变化377.82%</em></div>
+        </div>
+        <div class="deal-exec-boundary">
+          <span>本轮边界</span>
+          <p><strong>首图：</strong>新街口｜PS5/Switch｜1-3人包间｜马里奥派对</p>
+          <p><strong>证明：</strong>1-3人容量、马里奥派对不是马里奥排队、胡闹厨房/双人成行等玩法、1小时可加时规则</p>
+          <p><strong>不改：</strong>价格、库存、可售时段、推广预算</p>
+          <p><strong>复盘：</strong>7天后搜索词/交易指数无提升则回滚原标题</p>
+        </div>
+      </div>
+    </article>
+</div>
+
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+  <h4>数据来源与经营判断</h4>
+  <div class="table-scroll"><table class="compact">
+    <thead><tr><th>维度</th><th>结论</th></tr></thead>
+    <tbody><tr><td>搜索定位</td><td>本店应从泛“电玩/聚会”升级为“新街口PS5/Switch包间电玩”，用位置词、设备词、包间词三件套抢搜索。</td></tr>
+<tr><td>商品问题</td><td>本店已有交易爆发款，但商品结构缺低门槛搜索入口，且部分高价团购商品没有把权益说清楚。</td></tr>
+<tr><td>价格带判断</td><td>美团侧主偏好60~99元，点评侧主偏好87~150元；现有¥154商品需要做升级款表达，不应承担搜索入口职责。</td></tr>
+<tr><td>数据边界</td><td>手机端机会商品词为空；本建议来自手机端门店热搜词、网页端搜索洞察、网页端商品洞察、网页端客群洞察交叉判断。</td></tr>
+<tr><td>证据文件</td><td>trade-analysis-last30-2026-05-16 / 2026-05-17T10:58:46.897Z</td></tr></tbody>
+  </table></div>
+  <h4>手机端搜索词前10名</h4>
+  <div class="table-scroll"><table class="compact">
+    <thead><tr><th>排名</th><th>搜索词</th><th>搜索量</th><th>处理方式</th></tr></thead>
+    <tbody><tr><td>1</td><td>网吧</td><td>526</td><td>作为用户口语线索观察，不写成主标题，避免误导为网吧服务。</td></tr>
+<tr><td>2</td><td>电玩</td><td>280</td><td>进入主机游戏场景词，和 PS5/Switch 组合使用。</td></tr>
+<tr><td>3</td><td>网吧双人包间</td><td>253</td><td>作为用户口语线索观察，不写成主标题，避免误导为网吧服务。</td></tr>
+<tr><td>4</td><td>switch</td><td>248</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>5</td><td>PS5游戏馆</td><td>204</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>6</td><td>ps5</td><td>167</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>7</td><td>ps5游戏店</td><td>158</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>8</td><td>SWITCH游戏馆</td><td>103</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>9</td><td>switch游戏馆</td><td>78</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr>
+<tr><td>10</td><td>ps</td><td>75</td><td>进入核心设备词，主力团购标题和首图前置。</td></tr></tbody>
+  </table></div>
+  <h4>关键词机会完整证据</h4>
+  <div class="table-scroll"><table class="compact">
+    <thead><tr><th>优先级/分</th><th>词簇</th><th>手机端/网页端证据</th><th>当前覆盖</th><th>动作</th></tr></thead>
+    <tbody><tr><td>A<br><strong>96</strong></td><td>PS5游戏馆 / PS5</td><td><strong>手机端热搜：</strong>PS5游戏馆排名第5，搜索量204，ps5 排名第6，搜索量167，ps5游戏店排名第7，搜索量158<br><strong>网页端数据：</strong>高成交：ps5游戏馆 搜索人气6328 / 交易指数1580；Ps5 搜索人气5781 / 交易指数814</td><td>门店名和部分商品已有，但部分团购标题前半段没有稳定前置“新街口PS5游戏馆”。</td><td>门店副标题和主力团购商品标题前置“新街口PS5游戏馆”；商品详情首屏明确PS5型号/手柄数量/包间人数。</td></tr>
+<tr><td>A<br><strong>94</strong></td><td>Switch / Switch游戏馆</td><td><strong>手机端热搜：</strong>switch 排名第4，搜索量248，SWITCH游戏馆排名第8，搜索量103，switch游戏馆排名第9，搜索量78<br><strong>网页端数据：</strong>高成交：Switch 搜索人气5829 / 交易指数636；switch游戏馆 搜索人气4247 / 交易指数738</td><td>门店名包含switch，但部分商品标题只写PS5或NS，承接不够稳定。</td><td>统一用标准拼写“Switch”，主力团购商品标题写“PS5/Switch”，不要主动写SWTICH/swtich。</td></tr>
+<tr><td>A<br><strong>92</strong></td><td>双人包间 / 包间电玩 / 开黑包间</td><td><strong>手机端热搜：</strong>网吧双人包间排名第3，搜索量253，ps5双人包间排名第20，搜索量28，SWITCH双人包间排名第49，搜索量8<br><strong>网页端数据：</strong>增长：switch双人包间 搜索人气263 / 点击人气209 / 交易指数52</td><td>本店有包间优势，但标题常把“聚会/闺蜜/超值”放在设备和包间前面。</td><td>标题顺序改为“新街口 + PS5/Switch + 双人包间 + 时长/人数 + 场景”。</td></tr>
+<tr><td>A<br><strong>88</strong></td><td>新街口电玩 / PS5游戏馆新街口</td><td><strong>手机端热搜：</strong>新街口电玩排名第38，搜索量11，新街口电玩店排名第54，搜索量6，说明本店端尚未充分吃到位置词。<br><strong>网页端数据：</strong>交易飙升：新街口电玩 交易指数29 / +383.33%；PS5游戏馆新街口 交易指数13 / +225%。</td><td>门店名括号里有新街口文化大厦，但在标题前缀和商品名里不够强。</td><td>把“新街口”前移到商品标题和短描述，不只放在门店括号里。</td></tr>
+<tr><td>B<br><strong>82</strong></td><td>游戏室 / 主机游戏 / 游戏厅</td><td><strong>手机端热搜：</strong>游戏排名第14，搜索量50，游戏厅排名第17，搜索量37，主机游戏排名第19，搜索量30，游戏机排名第53，搜索量7<br><strong>网页端数据：</strong>交易飙升：游戏室 搜索人气230 / 点击人气149 / 交易指数22 / +450%。</td><td>门店定位清楚但“主机游戏包间/游戏室”表达可以加强。</td><td>详情页和标题补“主机游戏包间/游戏室”，但不要弱化PS5/Switch核心词。</td></tr>
+<tr><td>B<br><strong>80</strong></td><td>超级马里奥 / 马里奥派对 / 大乱斗 / 胡闹厨房 / 双人成行</td><td><strong>手机端热搜：</strong>双人成行排名第15，搜索量49，胡闹厨房排名第47，搜索量8；马里奥相关词尚未在手机端形成充分搜索。<br><strong>网页端数据：</strong>交易飙升：超级马里奥 交易指数14 / +600%。本店“闺蜜基友”商品交易飙升排名第2 / +377.82%。</td><td>本店已有玩法商品，但标题疑似存在“马里奥排队”误写风险。</td><td>做IP玩法款标题实验，明确写“马里奥派对/马里奥赛车/大乱斗/胡闹厨房/双人成行”。</td></tr>
+<tr><td>C<br><strong>52</strong></td><td>VR</td><td><strong>手机端热搜：</strong>手机端门店热搜词未出现VR。<br><strong>网页端数据：</strong>市场VR 搜索人气约1640 / 点击人气约1195 / 交易指数约99，有行业热度。</td><td>本店现有商品和搜索词未证明有VR承接。</td><td>仅在真实有VR设备时单独建团购商品测试；没有则不要写进PS5/Switch标题。</td></tr></tbody>
+  </table></div>
+  <h4>第一批团购标题完整边界</h4>
+  <div class="table-scroll"><table class="compact">
+    <thead><tr><th>顺序</th><th>当前标题</th><th>建议标题</th><th>基线</th><th>上线边界</th></tr></thead>
+    <tbody><tr><td>1</td><td>多人聚会丨6人超大包间·1小时 ｜ 可叠加丨双主机PS5NS</td><td>新街口6人PS5/Switch双主机包间1小时｜聚会开黑</td><td>交易人气榜排名第15/交易指数3,376/均价￥84；交易飙升榜排名第35/变化25.97%；热度人气榜排名第16/热度指数996</td><td><strong>首图角标：</strong>新街口｜PS5/Switch｜6人包间｜双主机<br><strong>证明点：</strong>6人容量、双主机PS5/Switch、独立包间、可叠加规则<br><strong>暂不改：</strong>价格、库存、可售时段、推广预算<br><strong>回滚：</strong>7天后搜索词/交易指数无提升则回滚原标题</td></tr>
+<tr><td>2</td><td>2-4人聚会包间丨2小时双主机超值套餐丨闺蜜约会基友开黑</td><td>新街口2-4人PS5/Switch双主机包间2小时｜约会开黑</td><td>交易人气榜排名第18/交易指数2,312/均价￥154；交易飙升榜排名第34/变化32.27%；热度人气榜排名第15/热度指数996</td><td><strong>首图角标：</strong>新街口｜PS5/Switch｜2-4人包间｜双主机<br><strong>证明点：</strong>2-4人容量、2小时权益、双主机/双屏或同玩方式、人均价解释<br><strong>暂不改：</strong>价格、库存、可售时段、推广预算<br><strong>回滚：</strong>7天后搜索词/交易指数无提升则回滚原标题</td></tr>
+<tr><td>3</td><td>【闺蜜基友】1-3人包1小时 ｜ 多人必玩马里奥排队胡闹厨房</td><td>新街口1-3人PS5/Switch包间1小时｜马里奥派对/胡闹厨房</td><td>交易人气榜排名第25/交易指数1,357/均价￥65；交易飙升榜排名第2/变化377.82%；热度人气榜未匹配</td><td><strong>首图角标：</strong>新街口｜PS5/Switch｜1-3人包间｜马里奥派对<br><strong>证明点：</strong>1-3人容量、马里奥派对不是马里奥排队、胡闹厨房/双人成行等玩法、1小时可加时规则<br><strong>暂不改：</strong>价格、库存、可售时段、推广预算<br><strong>回滚：</strong>7天后搜索词/交易指数无提升则回滚原标题</td></tr></tbody>
+  </table></div>
+</div>
+    </details>
+  </article>
+        <div class="ops-support-grid">
+  <div class="card ops-support-card ops-support-wide">
+    <h3>团购商品结构升级</h3>
+    <p class="ops-card-lead">先看每一层解决什么问题，再看对应商品、价格角色和不能越过的边界。</p>
+    <div class="ops-card-grid sku-grid">
+  <article class="ops-info-card sku-card">
+    <div class="ops-info-head">
+      <span>搜索引流层</span>
+      <b>解决“搜得到、点得进”</b>
+    </div>
+    <strong>新街口PS5/Switch双人包间1小时</strong>
+    <div class="ops-info-body">
+      <p><small>价格/角色</small>低峰限量60~99元内，可设置工作日更低入口价</p>
+      <p><small>为什么这样放</small>竞品1小时/2小时低价高交易；美团价格偏好60~99元。</p>
+      <p><small>边界</small>限时段、限库存，不要全时段低价。</p>
+    </div>
+  </article><article class="ops-info-card sku-card">
+    <div class="ops-info-head">
+      <span>主成交层</span>
+      <b>解决“到店主力收入”</b>
+    </div>
+    <strong>2-4人PS5/Switch双主机包间2小时</strong>
+    <div class="ops-info-body">
+      <p><small>价格/角色</small>87~150元，表达人均价和双主机权益</p>
+      <p><small>为什么这样放</small>本店热度996商品有基础；点评价格偏好87~150元。</p>
+      <p><small>边界</small>不要只写超值，要写双主机、双屏、独立包间、可同玩。</p>
+    </div>
+  </article><article class="ops-info-card sku-card">
+    <div class="ops-info-head">
+      <span>玩法爆发层</span>
+      <b>解决“搜索词和社交场景转化”</b>
+    </div>
+    <strong>马里奥派对/胡闹厨房/双人成行玩法包间</strong>
+    <div class="ops-info-body">
+      <p><small>价格/角色</small>60~99元先测1小时，跑通后做2小时升级</p>
+      <p><small>为什么这样放</small>本店闺蜜基友款交易飙升排名第2；网页端超级马里奥+600%。</p>
+      <p><small>边界</small>每个团购商品最多承载2-3个玩法词，避免标题堆砌。</p>
+    </div>
+  </article><article class="ops-info-card sku-card">
+    <div class="ops-info-head">
+      <span>多人升级层</span>
+      <b>解决“聚会团建和高客单”</b>
+    </div>
+    <strong>6-8人双屏双主机包间1小时/2小时</strong>
+    <div class="ops-info-body">
+      <p><small>价格/角色</small>100元以上，但首图和详情必须证明价值</p>
+      <p><small>为什么这样放</small>本店6-8人商品已有交易基础；客群30岁以上占比高。</p>
+      <p><small>边界</small>不要用低价入口替代多人升级款，避免牺牲高峰收益。</p>
+    </div>
+  </article>
+</div>
+  </div>
+  <div class="card ops-support-card">
+    <h3>美团/点评价格偏好</h3>
+    <p class="ops-card-lead">美团负责低门槛进店，点评负责升级价值解释，两个平台不要用同一套价格话术。</p>
+    <div class="price-pref-grid">
+  <article class="price-pref-card meituan">
+    <span>美团主偏好</span>
+    <strong>60~99元</strong>
+    <p>承担低门槛搜索入口，优先服务60~99元偏好。</p>
+    <div class="price-buckets">
+      <em>10~20</em><em>20~30</em><em>30~40</em><em>40~60</em><em>60~99</em><em>99~135</em>
+    </div>
+  </article><article class="price-pref-card dianping">
+    <span>点评主偏好</span>
+    <strong>87~150元</strong>
+    <p>承担升级款表达，解释87~150元的包间和双主机价值。</p>
+    <div class="price-buckets">
+      <em>10~22</em><em>22~40</em><em>40~60</em><em>60~87</em><em>87~150</em><em>150~200</em>
+    </div>
+  </article>
+</div>
+  </div>
+  <div class="card ops-support-card">
+    <h3>风险控制</h3>
+    <p class="ops-card-lead">这些红线用于防止标题优化变成误导、降价或无法复盘的全量改动。</p>
+    <div class="risk-rule-list">
+  <article class="risk-rule-card">
+      <b>1</b>
+      <div>
+        <strong>不真实的词不要写</strong>
+        <p>没有VR就不写VR，不是网吧就不把“网吧”作为主标题词。</p>
+      </div>
+    </article><article class="risk-rule-card">
+      <b>2</b>
+      <div>
+        <strong>不要一次改全量团购商品</strong>
+        <p>否则无法判断哪个变量有效。</p>
+      </div>
+    </article><article class="risk-rule-card">
+      <b>3</b>
+      <div>
+        <strong>低价入口只放低峰/限量</strong>
+        <p>避免把高峰用户从¥115~154升级款拉低。</p>
+      </div>
+    </article><article class="risk-rule-card">
+      <b>4</b>
+      <div>
+        <strong>不要堆砌大小写变体</strong>
+        <p>统一用PS5和Switch标准拼写。</p>
+      </div>
+    </article><article class="risk-rule-card">
+      <b>5</b>
+      <div>
+        <strong>所有改动要保留上线前截图和标题</strong>
+        <p>以便7天后复盘。</p>
+      </div>
+    </article>
+</div>
+  </div>
+  <div class="card ops-support-card ops-support-wide">
+    <h3>7/30天复盘指标</h3>
+    <p class="ops-card-lead">每个动作都要能回到一个基线和一个目标，否则 7 天后无法判断是否保留。</p>
+    <div class="kpi-review-grid">
+  <article class="kpi-review-card">
+    <div class="kpi-review-head">
+      <strong>门店搜索词</strong>
+      <span>手机端搜索词分析</span>
+    </div>
+    <div class="kpi-review-body">
+      <p><small>当前基线</small>手机端54个门店热搜词，前10名以网吧/电玩/PS5/Switch为主</p>
+      <i aria-hidden="true">→</i>
+      <p class="target"><small>目标</small>7天内“新街口电玩/PS5游戏馆新街口/双人包间/主机游戏”至少2个进入或稳定在前30名</p>
+    </div>
+  </article><article class="kpi-review-card">
+    <div class="kpi-review-head">
+      <strong>本店商品交易榜</strong>
+      <span>网页端商品洞察</span>
+    </div>
+    <div class="kpi-review-body">
+      <p><small>当前基线</small>最高排名第15，交易指数3376；闺蜜基友款飙升排名第2</p>
+      <i aria-hidden="true">→</i>
+      <p class="target"><small>目标</small>主力款进入或接近行业前10名，飙升款保持前10名</p>
+    </div>
+  </article><article class="kpi-review-card">
+    <div class="kpi-review-head">
+      <strong>价格带表现</strong>
+      <span>商品洞察 + 客群洞察</span>
+    </div>
+    <div class="kpi-review-body">
+      <p><small>当前基线</small>本店均价覆盖¥65、¥75、¥84、¥115、¥154；美团偏好60~99，点评偏好87~150</p>
+      <i aria-hidden="true">→</i>
+      <p class="target"><small>目标</small>60~99入口款带来新增搜索/点击，87~150升级款交易指数不下降</p>
+    </div>
+  </article><article class="kpi-review-card">
+    <div class="kpi-review-head">
+      <strong>标题实验</strong>
+      <span>商品详情/交易趋势</span>
+    </div>
+    <div class="kpi-review-body">
+      <p><small>当前基线</small>现标题多以聚会/闺蜜/超值开头</p>
+      <i aria-hidden="true">→</i>
+      <p class="target"><small>目标</small>含“新街口+PS5/Switch+包间”的标题点击和交易优于旧标题</p>
+    </div>
+  </article>
+</div>
+  </div>
+</div>
+      </div>
+    </section>
+
+    <section id="deep">
+      <div class="section-title">
+        <h2>深度洞察</h2>
+        <small>每个模块先给 3 条结论，再展开明细表，避免先被数据淹没。</small>
+      </div>
+      <div class="insight-stack">
+        <article class="insight-module">
+    <div class="module-head">
+      <span>7/30/90 漏斗 + 最新完整日</span>
+      <h3>经营健康与昨日完整日快照</h3>
+    </div>
+    <ol class="module-summary"><li>近30天曝光访问率 7.49%，低于同行 8.06%，首屏和曝光质量是第一漏点。</li><li>近30天意向转化率 7.91%，低于同行 16.63%，套餐和预约确定性需要重做。</li><li>2026-05-19 是已完整沉淀的前一天单日快照，可用于检查单日客单价和核销承接，但不替代 7/30/90 趋势。</li></ol>
+    
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>7/30/90 漏斗表</h4>
+            <div class="table-scroll"><table class="">
+    <thead><tr><th>周期</th><th>曝光人数</th><th>访问人数</th><th>曝光访问率</th><th>下单人数</th><th>意向转化率</th></tr></thead>
+    <tbody><tr><td>近7天</td><td><strong>1.5万</strong><span><span class="tag good">较上7天+11%</span></span></td><td><strong>1,031</strong><span><span class="tag good">较上7天+23%</span></span></td><td><strong>6.95%</strong><span>同行 7.90% / 优秀 19.02%</span></td><td><strong>82</strong><span><span class="tag good">较上7天+82%</span></span></td><td><strong>7.95%</strong><span>同行 16.81% / 优秀 32.32%</span></td></tr>
+<tr><td>近30天</td><td><strong>7.3万</strong><span><span class="tag bad">较上30天-13%</span></span></td><td><strong>5,485</strong><span><span class="tag bad">较上30天-14%</span></span></td><td><strong>7.49%</strong><span>同行 8.06% / 优秀 19.44%</span></td><td><strong>434</strong><span><span class="tag good">较上30天+12%</span></span></td><td><strong>7.91%</strong><span>同行 16.63% / 优秀 32.67%</span></td></tr>
+<tr><td>近90天</td><td><strong>23.5万</strong><span><span class="tag good">环比+31%</span></span></td><td><strong>1.8万</strong><span><span class="tag good">环比+10%</span></span></td><td><strong>7.66%</strong><span>同行 8.04% / 优秀 19.33%</span></td><td><strong>1,237</strong><span><span class="tag bad">环比-1%</span></span></td><td><strong>6.87%</strong><span>同行 17.19% / 优秀 34.18%</span></td></tr></tbody>
+  </table></div>
+            <h4>昨日完整日运营快照</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>指标</th><th>昨日完整日</th><th>参照/补充</th><th>来源</th><th>运营解读</th></tr></thead>
+    <tbody><tr><td>曝光人数</td><td>未返回/待补充</td><td>近30天日均 2,433</td><td>经营参谋-后台实时昨日完整日</td><td>昨日完整日有足够曝光基础，不能只按当天未完成数据判断曝光强弱。</td></tr>
+<tr><td>访问人数</td><td>未返回/待补充</td><td>近30天日均 183</td><td>经营参谋-后台实时昨日完整日</td><td>昨日访问人数用于检查单日承接，不替代近30天趋势。</td></tr>
+<tr><td>下单人数</td><td>未返回/待补充</td><td>近30天日均 14</td><td>经营参谋-后台实时昨日完整日</td><td>昨日单日下单表现只能作为短期观察，核心仍看 7/30/90 转化。</td></tr>
+<tr><td>曝光访问率（人数）</td><td>未返回/待补充</td><td>近30天 7.49%</td><td>经营参谋-后台实时昨日完整日</td><td>昨日进店效率高于近30天基线，但仍要看连续多日是否稳定。</td></tr>
+<tr><td>访问下单率（人数）</td><td>未返回/待补充</td><td>近30天 7.91%</td><td>经营参谋-后台实时昨日完整日</td><td>昨日访问后下单率高于近30天基线，说明套餐承接有短期改善空间，但不能用单日覆盖长期问题。</td></tr>
+<tr><td>团购下单核销率</td><td>未返回/待补充</td><td>核销券数 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>只用于确认昨日核销承接是否异常，不替代 7/30/90 趋势。</td></tr>
+<tr><td>下单客单价（实付）</td><td>未返回/待补充</td><td>下单实付 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>昨日客单价用于检查低价体验券占比和加时/多人套餐贡献。</td></tr>
+<tr><td>核销客单价（实付）</td><td>未返回/待补充</td><td>核销实付 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>核销客单价低于下单客单价时，要看低价券核销占比。</td></tr>
+<tr><td>实付/原价折扣率</td><td>未返回/待补充</td><td>原价 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>判断昨日是否过度依赖折扣，不能单纯用低价拉转化。</td></tr>
+<tr><td>访问频次/人</td><td>未返回/待补充</td><td>曝光频次 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>访问频次高但下单弱时，优先排查套餐和预约信息是否清楚。</td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+
+        <article class="insight-module">
+    <div class="module-head">
+      <span>竞对识别近14天 + 竞争力近30天</span>
+      <h3>竞对洞察</h3>
+    </div>
+    <ol class="module-summary"><li>竞对识别基于近14天客户流失情况，不能硬解释成 7/30/90 趋势，但对当前防守对象非常关键。</li><li>近30天潜在顾客 4,626 人，574 人去了其他门店，说明同商圈同需求截流明确。</li><li>门店竞争力 S / 98，基本盘不弱，短板集中在点击、下单转化、流失防守和评价承接。</li></ol>
+    <div class="viz-grid focus">
+            <article class="chart-card">
+    <header>
+      <div>
+        <span>近14天客户流失</span>
+        <h3>竞对截流排行</h3>
+      </div>
+    </header>
+    <div class="competitor-panel" role="img" aria-label="近14天竞对截流防守面板">
+    <div class="competitor-priority">
+      <div class="competitor-priority-card is-high">
+          <span>Top 1 · 重点防守</span>
+          <strong>WASD· 电玩無双Ps5·Switch主机…</strong>
+          <em>对比价格带和预约确定性</em>
+          <div>
+            <b>流量 1,298</b>
+            <b>转化 4,712</b>
+            <b>强度 3.6x</b>
+          </div>
+        </div><div class="competitor-priority-card is-watch">
+          <span>Top 2 · 持续观察</span>
+          <strong>小熊电玩·日式·Ps5·Switch主机游戏…</strong>
+          <em>保留品牌词和场景词防守</em>
+          <div>
+            <b>流量 1,035</b>
+            <b>转化 4,033</b>
+            <b>强度 3.9x</b>
+          </div>
+        </div><div class="competitor-priority-card is-critical">
+          <span>Top 3 · 最高防守</span>
+          <strong>小屋电玩 ps5·switch 主机游戏馆（…</strong>
+          <em>拆首图、套餐、评价背书</em>
+          <div>
+            <b>流量 988</b>
+            <b>转化 8,882</b>
+            <b>强度 9.0x</b>
+          </div>
+        </div>
+    </div>
+    <div class="competitor-compare-wrap">
+      <div class="competitor-compare-head">
+        <strong>截流对比榜</strong>
+        <span>不仅看流量，还看转化强度；强度高说明对方承接卖点更容易让用户继续下单。</span>
+      </div>
+      <div class="competitor-compare-list">
+        <div class="competitor-compare-row is-high">
+            <div class="compare-name">
+              <span>1</span>
+              <div>
+                <strong>WASD· 电玩無双Ps5·Switch主机游戏馆（新街…</strong>
+                <em>对比价格带和预约确定性</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:100.0%"></b></i>
+                <strong>1,298</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:53.0%"></b></i>
+                <strong>4,712</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:36.7%"></b></i>
+                <strong>3.6x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>重点防守</span>
+              <strong>74</strong>
+            </div>
+          </div><div class="competitor-compare-row is-watch">
+            <div class="compare-name">
+              <span>2</span>
+              <div>
+                <strong>小熊电玩·日式·Ps5·Switch主机游戏室（新百店）</strong>
+                <em>保留品牌词和场景词防守</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:79.7%"></b></i>
+                <strong>1,035</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:45.4%"></b></i>
+                <strong>4,033</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:39.4%"></b></i>
+                <strong>3.9x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>持续观察</span>
+              <strong>61</strong>
+            </div>
+          </div><div class="competitor-compare-row is-critical">
+            <div class="compare-name">
+              <span>3</span>
+              <div>
+                <strong>小屋电玩 ps5·switch 主机游戏馆（新街口店）</strong>
+                <em>拆首图、套餐、评价背书</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:76.1%"></b></i>
+                <strong>988</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:100.0%"></b></i>
+                <strong>8,882</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:90.8%"></b></i>
+                <strong>9.0x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>最高防守</span>
+              <strong>89</strong>
+            </div>
+          </div><div class="competitor-compare-row is-critical">
+            <div class="compare-name">
+              <span>4</span>
+              <div>
+                <strong>Take Two·游戏私影体验馆·Switch·PS5电…</strong>
+                <em>拆首图、套餐、评价背书</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:76.1%"></b></i>
+                <strong>988</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:100.0%"></b></i>
+                <strong>8,884</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:90.8%"></b></i>
+                <strong>9.0x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>最高防守</span>
+              <strong>89</strong>
+            </div>
+          </div><div class="competitor-compare-row is-high">
+            <div class="compare-name">
+              <span>5</span>
+              <div>
+                <strong>云图电玩·PS5·Switch· 4K观影游戏馆</strong>
+                <em>对比价格带和预约确定性</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:69.0%"></b></i>
+                <strong>896</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:99.8%"></b></i>
+                <strong>8,869</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:100.0%"></b></i>
+                <strong>9.9x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>重点防守</span>
+              <strong>86</strong>
+            </div>
+          </div><div class="competitor-compare-row is-watch">
+            <div class="compare-name">
+              <span>6</span>
+              <div>
+                <strong>探界包厢式电玩·PS5·Switch（南京新百店）</strong>
+                <em>保留品牌词和场景词防守</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:68.3%"></b></i>
+                <strong>887</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:41.7%"></b></i>
+                <strong>3,704</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:42.2%"></b></i>
+                <strong>4.2x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>持续观察</span>
+              <strong>54</strong>
+            </div>
+          </div><div class="competitor-compare-row is-watch">
+            <div class="compare-name">
+              <span>7</span>
+              <div>
+                <strong>结界电玩Ps5Ps4·Switch主机体验馆（新街口店）</strong>
+                <em>保留品牌词和场景词防守</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:53.6%"></b></i>
+                <strong>696</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:41.5%"></b></i>
+                <strong>3,690</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:53.6%"></b></i>
+                <strong>5.3x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>持续观察</span>
+              <strong>47</strong>
+            </div>
+          </div><div class="competitor-compare-row is-watch">
+            <div class="compare-name">
+              <span>8</span>
+              <div>
+                <strong>宅玩咖电玩Ps5·Switch·Xbox·主机桌游体验馆</strong>
+                <em>保留品牌词和场景词防守</em>
+              </div>
+            </div>
+            <div class="compare-bars">
+              <div class="compare-bar">
+                <span>流量</span>
+                <i><b class="flow" style="width:45.6%"></b></i>
+                <strong>592</strong>
+              </div>
+              <div class="compare-bar">
+                <span>转化</span>
+                <i><b class="transfer" style="width:59.7%"></b></i>
+                <strong>5,300</strong>
+              </div>
+              <div class="compare-bar">
+                <span>强度</span>
+                <i><b class="intensity" style="width:90.4%"></b></i>
+                <strong>9.0x</strong>
+              </div>
+            </div>
+            <div class="compare-pressure">
+              <span>持续观察</span>
+              <strong>53</strong>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+    <p class="chart-note">流量指数和转化指数同时高的竞对，需要优先拆首图、套餐货架和评价背书。</p>
+  </article>
+          </div>
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>竞对结论与打法</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>判断</th><th>证据</th><th>原因</th><th>动作</th></tr></thead>
+    <tbody><tr><td>门店基本盘不差</td><td>竞争力 S / 98，近30天访问 5,485 人，后台流量排名 99</td><td>不是“没有人看”，而是被看完以后没有把用户留住。</td><td>先优化首屏、套餐和预约承接，不建议先盲目加预算。</td></tr>
+<tr><td>同类竞对截流明显</td><td>近30天潜在顾客 4,626 人，其中 574 人去了其他门店；后台另给出流失到别店比率 25.43%</td><td>用户是在同一批 PS5/Switch/包间电玩门店里横向比较后流失。</td><td>把小熊、WASD、探界、宅玩咖作为首批 4 个对标对象，只拆首图、套餐货架、评价背书三项。</td></tr>
+<tr><td>转化输在确定性</td><td>近30天意向转化率 7.91%，同行均值 16.63%；后台下单转化率 未返回，同行均值 未返回</td><td>用户点进来后还在犹豫：玩什么、几个人买哪张券、是否要预约、路怎么走。</td><td>套餐详情第一屏必须写“适合谁、玩多久、热门游戏、预约方式、到店路线”。</td></tr>
+<tr><td>不要误判为团单太少</td><td>在线团单数 14；诊断详情显示在线团单数 14，已接近/达到优秀值，但折扣卡、次卡、拼团均为“无”</td><td>问题更像“商品类型和场景表达不够”，不是继续堆很多相似团购。</td><td>保留 3-5 个主套餐，增加次卡/拼团/错峰券测试，避免货架变复杂。</td></tr></tbody>
+  </table></div>
+            <h4>高流失竞对列表</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>排名</th><th>竞对门店</th><th>流失流量指数</th><th>流失转化指数</th><th>类型</th><th>动作</th></tr></thead>
+    <tbody><tr><td>1</td><td>WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）</td><td>1,298</td><td>4,712</td><td><span class="tag bad">头部竞对</span></td><td>优先拆解首图、套餐货架、榜单背书，做同用户池防守</td></tr>
+<tr><td>2</td><td>小熊电玩·日式·Ps5·Switch主机游戏室（新百店）</td><td>1,035</td><td>4,033</td><td><span class="tag bad">直接竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr>
+<tr><td>3</td><td>小屋电玩 ps5·switch 主机游戏馆（新街口店）</td><td>988</td><td>8,882</td><td><span class="tag bad">头部竞对</span></td><td>优先拆解首图、套餐货架、榜单背书，做同用户池防守</td></tr>
+<tr><td>4</td><td>Take Two·游戏私影体验馆·Switch·PS5电玩（新街口店）</td><td>988</td><td>8,884</td><td><span class="tag bad">头部竞对</span></td><td>优先拆解首图、套餐货架、榜单背书，做同用户池防守</td></tr>
+<tr><td>5</td><td>云图电玩·PS5·Switch· 4K观影游戏馆</td><td>896</td><td>8,869</td><td><span class="tag bad">头部竞对</span></td><td>优先拆解首图、套餐货架、榜单背书，做同用户池防守</td></tr>
+<tr><td>6</td><td>探界包厢式电玩·PS5·Switch（南京新百店）</td><td>887</td><td>3,704</td><td><span class="tag bad">直接竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr>
+<tr><td>7</td><td>结界电玩Ps5Ps4·Switch主机体验馆（新街口店）</td><td>696</td><td>3,690</td><td><span class="tag bad">直接竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr>
+<tr><td>8</td><td>宅玩咖电玩Ps5·Switch·Xbox·主机桌游体验馆</td><td>592</td><td>5,300</td><td><span class="tag bad">潜在竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr>
+<tr><td>9</td><td>嘟嘟电玩·PS5·Switch·Xbox（新百店）</td><td>467</td><td>3,675</td><td><span class="tag bad">尾部竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr>
+<tr><td>10</td><td>GTW圣都拼豆电玩ps5.switch电竞馆（新百店）</td><td>405</td><td>2,024</td><td><span class="tag bad">尾部竞对</span></td><td>纳入竞对观察，重点比较商品结构和价格带</td></tr></tbody>
+  </table></div>
+            <h4>竞对防守动作</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>对象</th><th>数据/观察</th><th>含义</th><th>建议</th></tr></thead>
+    <tbody><tr><td>小熊电玩（新百店）</td><td>流失流量指数 1,298，流失转化指数 4,712；前台观察为 4.9-5星、回头客/口碑强</td><td>用户把它当“更稳妥的同类选择”。</td><td>首图前 3 张补“独立包间实拍、设备和手柄状态、热门游戏墙”；评价引导关键词加“环境干净、设备新、服务好”。</td></tr>
+<tr><td>WASD 新街口店</td><td>流失流量指数 1,035，流失转化指数 4,033，转化截流更强</td><td>它可能在同样搜索词下更容易让用户下单。</td><td>重点对比其团购标题、券面信息、预约说明。我们的 2小时双人主爆品要在标题里直接写“PS5/Switch双人包间”。</td></tr>
+<tr><td>探界/云图/嘟嘟/宅玩咖</td><td>均为 PS5、Switch、Xbox、包间、观影等相近卖点</td><td>竞争不是单一门店，而是新街口同类娱乐供给密集。</td><td>不要把卖点写成普通“游戏馆”；要绑定“新街口、文化大厦、私密包间、约会/朋友局、雨天室内”。</td></tr>
+<tr><td>整体价格带</td><td>前台竞对人均多在 ¥45-48；本店 2小时双人券 ¥83.8，折合约 ¥41.9/人</td><td>价格不是最大短板，最大短板是用户没有快速理解“买哪张、怎么预约、值不值”。</td><td>不建议先降价。先改套餐命名、详情页、路线预约说明；低峰期再用错峰券补利用率。</td></tr></tbody>
+  </table></div>
+            <h4>门店竞争力弱项</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>分类</th><th>指标</th><th>本店值</th><th>同行均值</th><th>优秀值</th><th>评级</th></tr></thead>
+    <tbody><tr><td>流量</td><td>点击率</td><td>7.29%</td><td>7.23%</td><td>19.55%</td><td><span class="tag neutral">B</span></td></tr>
+<tr><td>下单券数</td><td>是否折扣卡在线</td><td>无</td><td>/</td><td>有</td><td><span class="tag bad">D</span></td></tr>
+<tr><td>下单券数</td><td>是否有次卡在线</td><td>无</td><td>/</td><td>有</td><td><span class="tag bad">D</span></td></tr>
+<tr><td>下单券数</td><td>是否有拼团在线</td><td>无</td><td>/</td><td>有</td><td><span class="tag bad">D</span></td></tr>
+<tr><td>下单券数</td><td>IM-30秒内回复率</td><td>77.33%</td><td>68.45%</td><td>68.45%</td><td><span class="tag neutral">B</span></td></tr>
+<tr><td>下单券数</td><td>流失到别店比率</td><td>25.43%</td><td>17.90%</td><td>0.00%</td><td><span class="tag bad">D</span></td></tr>
+<tr><td>星级评价</td><td>差评回复率</td><td>未返回/待补充</td><td>47.92%</td><td>47.92%</td><td><span class="tag bad">C</span></td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+
+        <article class="insight-module">
+    <div class="module-head">
+      <span>搜索7/30天 + 客群30/90天</span>
+      <h3>市场洞察与关键词归并</h3>
+    </div>
+    <ol class="module-summary"><li>搜索洞察只返回 7/30 天，因此用于投放动作和内容承接，不硬推 90 天关键词趋势。</li><li>VR体验馆/vr体验馆、Switch/swicth 等大小写和错拼变体必须先归并，否则预算会被分散。</li><li>客群画像近30/90天可用，女性和 30+ 用户占比高，素材要从“硬件参数”转向约会、朋友局、亲子和逛街后室内休闲。</li></ol>
+    <div class="viz-grid focus">
+  <article class="chart-card">
+    <header>
+      <div>
+        <span>搜索7/30天</span>
+        <h3>关键词归并前10名</h3>
+      </div>
+    </header>
+    <div class="keyword-intent-panel" role="img" aria-label="关键词归并投放决策面板">
+    <div class="keyword-summary-grid">
+      <div class="keyword-summary-card is-good">
+        <span>精准成交词</span>
+        <strong>685 交易</strong>
+        <em>3 组词 · 搜索 6,218</em>
+        <b>优先承接 PS5 / Switch / 包间</b>
+      </div><div class="keyword-summary-card is-warn">
+        <span>泛场景词</span>
+        <strong>105 交易</strong>
+        <em>2 组词 · 搜索 1,698</em>
+        <b>低价测试，不混主预算</b>
+      </div><div class="keyword-summary-card is-risk">
+        <span>观察/排除</span>
+        <strong>8 组观察词</strong>
+        <em>搜索 296 · 交易 0</em>
+        <b>只观察或进否词包</b>
+      </div>
+    </div>
+    <div class="keyword-intent-list">
+      <div class="keyword-intent-row is-good">
+          <div class="keyword-intent-name">
+            <span>1</span>
+            <div>
+              <strong>Switch / switch双人包间</strong>
+              <em>SWitCH / 游戏机SWITCH / 游戏机switch</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:100.0%"></b></i>
+              <strong>5,913</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:100.0%"></b></i>
+              <strong>656</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:38.3%"></b></i>
+              <strong>11.1%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>成交精准词</span>
+            <strong>进精准成交计划</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>2</span>
+            <div>
+              <strong>玩刻</strong>
+              <em>玩刻</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:15.7%"></b></i>
+              <strong>928</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:29.6%"></b></i>
+              <strong>194</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:72.2%"></b></i>
+              <strong>20.9%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-warn">
+          <div class="keyword-intent-name">
+            <span>3</span>
+            <div>
+              <strong>VR体验馆 / VR相关词</strong>
+              <em>vr / VR / Vr</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:28.5%"></b></i>
+              <strong>1,688</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:16.0%"></b></i>
+              <strong>105</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:21.5%"></b></i>
+              <strong>6.2%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>泛娱乐场景词</span>
+            <strong>低价测试承接页</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>4</span>
+            <div>
+              <strong>大玩家</strong>
+              <em>大玩家</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:4.8%"></b></i>
+              <strong>283</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:8.8%"></b></i>
+              <strong>58</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:70.8%"></b></i>
+              <strong>20.5%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>5</span>
+            <div>
+              <strong>YumeWorld运动超乐场</strong>
+              <em>YumeWorld运动超乐场</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:2.8%"></b></i>
+              <strong>166</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:5.8%"></b></i>
+              <strong>38</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:79.1%"></b></i>
+              <strong>22.9%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>6</span>
+            <div>
+              <strong>yumeworld运动超乐场</strong>
+              <em>yumeworld运动超乐场</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:2.8%"></b></i>
+              <strong>166</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:5.8%"></b></i>
+              <strong>38</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:79.1%"></b></i>
+              <strong>22.9%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>7</span>
+            <div>
+              <strong>YUMEWORLD运动超乐场</strong>
+              <em>YUMEWORLD运动超乐场</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:2.8%"></b></i>
+              <strong>166</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:5.8%"></b></i>
+              <strong>38</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:79.1%"></b></i>
+              <strong>22.9%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-good">
+          <div class="keyword-intent-name">
+            <span>8</span>
+            <div>
+              <strong>电玩包间 / 主机游戏馆</strong>
+              <em>游戏室 / 新街口电玩 / 电玩双人包间</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:4.9%"></b></i>
+              <strong>288</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:4.4%"></b></i>
+              <strong>29</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:34.8%"></b></i>
+              <strong>10.1%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>成交精准词</span>
+            <strong>进精准成交计划</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>9</span>
+            <div>
+              <strong>核电站</strong>
+              <em>核电站</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:1.3%"></b></i>
+              <strong>76</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:3.4%"></b></i>
+              <strong>22</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:100.0%"></b></i>
+              <strong>28.9%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div><div class="keyword-intent-row is-neutral">
+          <div class="keyword-intent-name">
+            <span>10</span>
+            <div>
+              <strong>Joy</strong>
+              <em>Joy</em>
+            </div>
+          </div>
+          <div class="keyword-intent-bars">
+            <div class="keyword-intent-bar">
+              <span>搜索</span>
+              <i><b class="search" style="width:1.1%"></b></i>
+              <strong>64</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>交易</span>
+              <i><b class="buy" style="width:2.6%"></b></i>
+              <strong>17</strong>
+            </div>
+            <div class="keyword-intent-bar">
+              <span>倾向</span>
+              <i><b class="tendency" style="width:91.8%"></b></i>
+              <strong>26.6%</strong>
+            </div>
+          </div>
+          <div class="keyword-decision">
+            <span>可测试词</span>
+            <strong>小预算48小时</strong>
+          </div>
+        </div>
+    </div>
+  </div>
+    <p class="chart-note">大小写、错拼、同义词先归并，再决定预算和落地页承接。</p>
+  </article>
+</div>
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>关键词归并面板</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>归并主词</th><th>原始变体</th><th>搜索人气</th><th>点击人气</th><th>交易指数</th><th>归类</th><th>投放动作</th></tr></thead>
+    <tbody><tr><td>Switch / switch双人包间</td><td>SWitCH / 游戏机SWITCH / 游戏机switch / SWIch / sWITCH</td><td>5,913</td><td>4,079</td><td>656</td><td><span class="tag good">成交精准词</span></td><td>并入精准成交词计划，落地页统一承接双人包间、PS5/Switch、热门游戏和预约。</td></tr>
+<tr><td>玩刻</td><td>玩刻</td><td>928</td><td>724</td><td>194</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>VR体验馆 / VR相关词</td><td>vr / VR / Vr / vR</td><td>1,688</td><td>1,224</td><td>105</td><td><span class="tag neutral">泛娱乐场景词</span></td><td>作为泛场景低价测试，不与精准成交词混预算；两天无订单即降权。</td></tr>
+<tr><td>大玩家</td><td>大玩家</td><td>283</td><td>220</td><td>58</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>YumeWorld运动超乐场</td><td>YumeWorld运动超乐场</td><td>166</td><td>151</td><td>38</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>yumeworld运动超乐场</td><td>yumeworld运动超乐场</td><td>166</td><td>151</td><td>38</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>YUMEWORLD运动超乐场</td><td>YUMEWORLD运动超乐场</td><td>166</td><td>151</td><td>38</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>电玩包间 / 主机游戏馆</td><td>游戏室 / 新街口电玩 / 电玩双人包间 / 电玩店 / 电玩猩海乐城</td><td>288</td><td>251</td><td>29</td><td><span class="tag good">成交精准词</span></td><td>并入精准成交词计划，落地页统一承接双人包间、PS5/Switch、热门游戏和预约。</td></tr>
+<tr><td>核电站</td><td>核电站</td><td>76</td><td>50</td><td>22</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>Joy</td><td>Joy</td><td>64</td><td>32</td><td>17</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>超级马里奥</td><td>超级马里奥</td><td>148</td><td>56</td><td>14</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr>
+<tr><td>抓娃娃团购</td><td>抓娃娃团购</td><td>37</td><td>27</td><td>12</td><td><span class="tag neutral">可测试词</span></td><td>小预算观察 48 小时，有点击无交易就降权。</td></tr></tbody>
+  </table></div>
+            <h4>搜索词组合判断</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>分组</th><th>代表词</th><th>交易/噪声证据</th><th>动作</th></tr></thead>
+    <tbody><tr><td>成交精准词</td><td>SWitCH / 新街口电玩 / 游戏机SWITCH / 游戏机switch</td><td>前排样本交易指数合计 699</td><td>主计划吃量，素材直接承接双人包间、PS5/Switch、热门游戏和预约。</td></tr>
+<tr><td>泛娱乐场景词</td><td>新街口好玩的地方 / 去哪玩 / VR体验馆</td><td>前排样本交易指数合计 0</td><td>低价控量，作为新客入口，不和精准词混预算。</td></tr>
+<tr><td>噪声/观察词</td><td>新街口电影 / 四渡 / 大闹天宫 / 南京失恋博物馆 / 卧龙谷</td><td>大量词搜索高但交易为 0</td><td>设置否词或观察计划，两天有点击无交易就降权。</td></tr></tbody>
+  </table></div>
+            <h4>市场动作清单</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>动作</th><th>关键词/人群</th><th>具体做法</th><th>负责人</th></tr></thead>
+    <tbody><tr><td>精准成交词计划</td><td>switch双人包间 / 电玩包间 / PS5 / Switch / 新街口电玩</td><td>单独计划承接，首图直接出现“双人包间 + 可预约 + 热门游戏”；预算先占 60%，CPO 低于 ¥35 可加量。</td><td>投放负责人</td></tr>
+<tr><td>泛娱乐场景计划</td><td>新街口好玩的地方 / 去哪玩 / VR体验馆 / 夹娃娃 / 游戏厅</td><td>低价控量，不和精准词混预算；预算先占 25%，素材讲“新街口室内约会、朋友聚会、下雨天可玩”。</td><td>投放负责人 + 平台运营</td></tr>
+<tr><td>排除/观察词</td><td>博物馆、电影爆米花、外地场馆、明显不相关品牌词</td><td>预算不超过 15%；不做主消耗；若两天有点击无交易，降价、否词或移出主计划。</td><td>投放负责人</td></tr>
+<tr><td>人群场景承接</td><td>女性、30+、亲子、购物后休闲、生日团建</td><td>新增 4 组套餐/图文标签：情侣约会、朋友开黑、亲子周末、生日团建。</td><td>店长 + 内容运营</td></tr></tbody>
+  </table></div>
+            <h4>本轮团购标题升级建议</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>序号</th><th>当前标题</th><th>建议标题</th><th>证据</th><th>目的</th></tr></thead>
+    <tbody><tr><td>1</td><td>多人聚会丨6人超大包间·1小时 ｜ 可叠加丨双主机PS5NS</td><td>新街口6人PS5/Switch双主机包间1小时｜聚会开黑</td><td>交易人气榜排名第15，交易指数3376，均价¥84；热度996。</td><td>吃“新街口+PS5/Switch+包间+聚会”组合词，保留当前¥84主成交优势。</td></tr>
+<tr><td>2</td><td>2-4人聚会包间丨2小时双主机超值套餐丨闺蜜约会基友开黑</td><td>新街口2-4人PS5/Switch双主机包间2小时｜约会开黑</td><td>交易人气榜排名第18，交易指数2312，均价¥154；热度996。</td><td>服务点评87~150升级价位，同时减少高价造成的理解成本。</td></tr>
+<tr><td>3</td><td>【闺蜜基友】1-3人包1小时 ｜ 多人必玩马里奥排队胡闹厨房</td><td>新街口1-3人PS5/Switch包间1小时｜马里奥派对/胡闹厨房</td><td>交易飙升榜排名第2，涨幅377.82%，交易指数1357，均价¥65。</td><td>作为第一批小范围对照测试款，承接超级马里奥、胡闹厨房、闺蜜约会。</td></tr>
+<tr><td>4</td><td>【朋友聚会】4人包间1小时 ｜ 马里奥赛车/大乱斗马里奥派对</td><td>4人PS5/Switch包间1小时｜马里奥赛车/大乱斗/派对</td><td>交易人气榜排名第37，交易指数819，均价¥75；交易飙升榜排名第19，+100%。</td><td>把玩法词与设备词同时前置，适合朋友聚会场景。</td></tr>
+<tr><td>5</td><td>全员同玩丨6-8人双屏幕1小时丨双机位不轮流聚会必备</td><td>6-8人PS5/Switch双屏双主机包间1小时｜团建聚会不轮流</td><td>交易人气榜排名第43，交易指数592，均价¥115；交易飙升榜排名第29，+60%。</td><td>做多人升级款，强化高客单合理性。</td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+
+        <article class="insight-module">
+    <div class="module-head">
+      <span>客群30/90天</span>
+      <h3>客群画像与消费场景</h3>
+    </div>
+    <ol class="module-summary"><li>近30天客群样本 82,125 人，近90天样本 238,067 人，可用于素材和套餐表达。</li><li>女性和 30+ 用户占比高，页面表达应从硬件参数转向约会、朋友局、亲子和逛街后休闲。</li><li>购物、亲子、教育培训、休闲娱乐等异业偏好靠前，适合做“新街口逛街后室内娱乐”的场景承接。</li></ol>
+    <div class="viz-grid focus">
+  <article class="chart-card">
+    <header>
+      <div>
+        <span>近30天</span>
+        <h3>客群画像</h3>
+      </div>
+    </header>
+    <div class="audience-panel" role="img" aria-label="客群画像">
+    <div class="audience-metrics">
+      <div class="audience-metric">
+        <span>性别结构</span>
+        <strong>女 55%</strong>
+        <em>男 45%</em>
+      </div>
+      <div class="audience-metric">
+        <span>年龄重点</span>
+        <strong>30+ 74.1%</strong>
+        <em>适合约会、朋友局、亲子与逛街后休闲</em>
+      </div>
+    </div>
+    <div class="audience-age-grid">
+      <div class="age-tile ">
+          <div><span>20以下</span><strong>5.9%</strong></div>
+          <i><b style="width:25.5%"></b></i>
+        </div><div class="age-tile is-strong">
+          <div><span>20~25</span><strong>20.0%</strong></div>
+          <i><b style="width:86.6%"></b></i>
+        </div><div class="age-tile ">
+          <div><span>25~30</span><strong>15.4%</strong></div>
+          <i><b style="width:66.7%"></b></i>
+        </div><div class="age-tile is-strong">
+          <div><span>30~35</span><strong>19.9%</strong></div>
+          <i><b style="width:86.1%"></b></i>
+        </div><div class="age-tile is-strong">
+          <div><span>35~40</span><strong>23.1%</strong></div>
+          <i><b style="width:100.0%"></b></i>
+        </div><div class="age-tile ">
+          <div><span>40以上</span><strong>15.7%</strong></div>
+          <i><b style="width:68.0%"></b></i>
+        </div>
+    </div>
+  </div>
+    <p class="chart-note">女性与30+用户占比高，素材要补约会、亲子、朋友局场景。</p>
+  </article>
+</div>
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>客群画像</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>维度</th><th>近30天</th><th>近90天</th><th>运营建议</th></tr></thead>
+    <tbody><tr><td>性别</td><td>男 45.0% / 女 55.0%</td><td>男 44.0% / 女 56.0%</td><td>女性占比更高，首图和套餐文案不能只写“男生电玩”，要明确约会、朋友局、轻松不尴尬。</td></tr>
+<tr><td>年龄</td><td>35~40 23.1% / 20~25 20.0% / 30~35 19.9%</td><td>35~40 23.6% / 30~35 19.6% / 20~25 19.1%</td><td>30岁以上用户池很大，内容要降低“游戏门槛”，强调包间、放松、聚会、亲子和不踩坑。</td></tr>
+<tr><td>会员等级</td><td>无等级 30.5% / LV1 7.2% / LV2 13.7% / LV3 19.4% / LV4 19.1% / LV5 8.8%</td><td>无等级 30.9% / LV1 7.2% / LV2 13.8% / LV3 19.4% / LV4 18.8% / LV5 8.6%</td><td>LV3-LV5 占比可观，这类用户会看评价、榜单和服务确定性，评价 SOP 不能弱。</td></tr>
+<tr><td>异业场景</td><td>亲子 9.4% / 购物 9.2% / 教育培训 8.4% / 休闲娱乐 8.2% / 运动健身 7.3% / 生活服务 7.0%</td><td>购物 9.3% / 亲子 9.0% / 教育培训 8.3% / 休闲娱乐 8.0% / 运动健身 7.3% / 生活服务 7.2%</td><td>购物、亲子、教育培训、休闲娱乐是关键邻近场景，可做“逛街后室内休闲”“周末亲子包间”。</td></tr></tbody>
+  </table></div>
+            <h4>异业偏好与场景</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>动作</th><th>关键词/人群</th><th>具体做法</th><th>负责人</th></tr></thead>
+    <tbody><tr><td>精准成交词计划</td><td>switch双人包间 / 电玩包间 / PS5 / Switch / 新街口电玩</td><td>单独计划承接，首图直接出现“双人包间 + 可预约 + 热门游戏”；预算先占 60%，CPO 低于 ¥35 可加量。</td><td>投放负责人</td></tr>
+<tr><td>泛娱乐场景计划</td><td>新街口好玩的地方 / 去哪玩 / VR体验馆 / 夹娃娃 / 游戏厅</td><td>低价控量，不和精准词混预算；预算先占 25%，素材讲“新街口室内约会、朋友聚会、下雨天可玩”。</td><td>投放负责人 + 平台运营</td></tr>
+<tr><td>排除/观察词</td><td>博物馆、电影爆米花、外地场馆、明显不相关品牌词</td><td>预算不超过 15%；不做主消耗；若两天有点击无交易，降价、否词或移出主计划。</td><td>投放负责人</td></tr>
+<tr><td>人群场景承接</td><td>女性、30+、亲子、购物后休闲、生日团建</td><td>新增 4 组套餐/图文标签：情侣约会、朋友开黑、亲子周末、生日团建。</td><td>店长 + 内容运营</td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+
+        <article class="insight-module">
+    <div class="module-head">
+      <span>推广7/30/90 + 当前计划配置</span>
+      <h3>推广效率与预算闭环</h3>
+    </div>
+    <ol class="module-summary"><li>近30天推广花费 ¥6,439.67，订单 196，CPO ¥32.86，需要先控效再加量。</li><li>计划日预算配置 ¥200.00，推广中心未返回昨日计划级消耗；预算判断以 7/30/90 CPO 和订单效率为主。</li><li>精准成交词、泛娱乐场景词、观察/排除词必须拆开复盘，不能用一个计划混投所有意图。</li></ol>
+    <div class="viz-grid focus">
+            <article class="chart-card">
+    <header>
+      <div>
+        <span>7/30/90</span>
+        <h3>推广效率趋势</h3>
+      </div>
+    </header>
+    <div class="promo-efficiency-panel" role="img" aria-label="推广效率7/30/90趋势">
+    <div class="promo-period-grid">
+      <div class="promo-period-card is-good">
+          <div class="period-head"><span>近7天</span><strong>¥30.79</strong></div>
+          <div class="period-sub">CPO 达标或接近 · 目标 ¥38 内</div>
+          <div class="metric-strip">
+            <span>花费</span>
+            <i><b style="width:9.6%"></b></i>
+            <strong>¥1,293.11</strong>
+          </div>
+          <div class="metric-strip daily-spend-strip">
+            <span>日均</span>
+            <i><b style="width:86.1%"></b></i>
+            <strong>¥184.73</strong>
+          </div>
+          <div class="metric-strip">
+            <span>订单</span>
+            <i><b style="width:12.0%"></b></i>
+            <strong>42</strong>
+          </div>
+          <div class="metric-strip cpo-strip">
+            <span>CPO</span>
+            <i><b style="width:80.1%"></b></i>
+            <strong>¥30.79</strong>
+          </div>
+        </div><div class="promo-period-card is-good">
+          <div class="period-head"><span>近30天</span><strong>¥32.86</strong></div>
+          <div class="period-sub">CPO 达标或接近 · 目标 ¥38 内</div>
+          <div class="metric-strip">
+            <span>花费</span>
+            <i><b style="width:47.9%"></b></i>
+            <strong>¥6,439.67</strong>
+          </div>
+          <div class="metric-strip daily-spend-strip">
+            <span>日均</span>
+            <i><b style="width:100.0%"></b></i>
+            <strong>¥214.66</strong>
+          </div>
+          <div class="metric-strip">
+            <span>订单</span>
+            <i><b style="width:56.0%"></b></i>
+            <strong>196</strong>
+          </div>
+          <div class="metric-strip cpo-strip">
+            <span>CPO</span>
+            <i><b style="width:85.5%"></b></i>
+            <strong>¥32.86</strong>
+          </div>
+        </div><div class="promo-period-card is-risk">
+          <div class="period-head"><span>近90天</span><strong>¥38.43</strong></div>
+          <div class="period-sub">CPO 高于目标 · 目标 ¥38 内</div>
+          <div class="metric-strip">
+            <span>花费</span>
+            <i><b style="width:100.0%"></b></i>
+            <strong>¥13,450.85</strong>
+          </div>
+          <div class="metric-strip daily-spend-strip">
+            <span>日均</span>
+            <i><b style="width:69.6%"></b></i>
+            <strong>¥149.45</strong>
+          </div>
+          <div class="metric-strip">
+            <span>订单</span>
+            <i><b style="width:100.0%"></b></i>
+            <strong>350</strong>
+          </div>
+          <div class="metric-strip cpo-strip">
+            <span>CPO</span>
+            <i><b style="width:100.0%"></b></i>
+            <strong>¥38.43</strong>
+          </div>
+        </div>
+    </div>
+    <div class="promo-efficiency-note">
+      <strong>判断</strong>
+      <span>花费和订单规模在增长，但 90 天 CPO 抬升到 ¥38.43，说明加量前要先把近30天 CPO 压回 ¥38 内。</span>
+    </div>
+  </div>
+    <p class="chart-note">花费增长不等于效率提升，CPO 要回到 ¥38 以内再考虑加量。</p>
+  </article>
+          </div>
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>推广 7/30/90 效率</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>周期</th><th>推广花费</th><th>广告曝光</th><th>广告点击</th><th>CPC</th><th>广告订单</th></tr></thead>
+    <tbody><tr><td>近7天</td><td><strong>¥1,293.11</strong><span>日均 ¥184.73</span></td><td><strong>14,921</strong><span>占总曝光 45.22%</span></td><td><strong>619</strong><span>CTR 4.15%</span></td><td><strong>¥2.09</strong><span>点击后订单率 6.79%</span></td><td><strong>42</strong><span>CPO ¥30.79</span></td></tr>
+<tr><td>近30天</td><td><strong>¥6,439.67</strong><span>日均 ¥214.66</span></td><td><strong>76,966</strong><span>占总曝光 46.65%</span></td><td><strong>3,457</strong><span>CTR 4.49%</span></td><td><strong>¥1.86</strong><span>点击后订单率 5.67%</span></td><td><strong>196</strong><span>CPO ¥32.86</span></td></tr>
+<tr><td>近90天</td><td><strong>¥13,450.85</strong><span>日均 ¥149.45</span></td><td><strong>170,879</strong><span>占总曝光 33.12%</span></td><td><strong>7,823</strong><span>CTR 4.58%</span></td><td><strong>¥1.72</strong><span>点击后订单率 4.47%</span></td><td><strong>350</strong><span>CPO ¥38.43</span></td></tr></tbody>
+  </table></div>
+            <h4>账户与计划闭环</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>闭环项</th><th>预算/状态</th><th>昨日花费/门店</th><th>昨日利用率/驳回</th><th>CPO/缺口</th><th>操作判断</th></tr></thead>
+    <tbody><tr><td>账户日预算配置</td><td>¥200.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>近30天 CPO ¥32.86</td><td>推广中心当前导出未返回昨日账户消耗，不能用当天未完整消耗判断预算是否耗尽。</td></tr>
+<tr><td>计划状态</td><td>1 个在线计划 / 1 个暂停计划</td><td>在线门店 1</td><td>驳回 0</td><td>计划级订单/CPO未返回</td><td>用账户消耗 + 近30天 CPO + 词包动作做控效判断。</td></tr></tbody>
+  </table></div>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>计划</th><th>状态</th><th>日预算配置</th><th>昨日花费</th><th>昨日预算利用率</th><th>单元/创意</th><th>动作</th></tr></thead>
+    <tbody><tr><td>智能计划020716443628</td><td><span class="tag good">运行中 / 推广中</span></td><td>¥200.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>文化（推广中）</td><td>只在精准词 CPO 达标后加量，先清理无订单泛词。</td></tr>
+<tr><td>推广计划020312174422</td><td><span class="tag neutral">运行中 / 已暂停</span></td><td>¥250.00</td><td>未返回/待补充</td><td>未返回/待补充</td><td>门店推广2026020328d（已暂停）</td><td>计划存在但单元未处于推广中，不在承接页修好前恢复消耗。</td></tr></tbody>
+  </table></div>
+            <h4>关键词组动作</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>分组</th><th>词包</th><th>投放方式</th><th>止损规则</th></tr></thead>
+    <tbody><tr><td>泛流量控量组</td><td>电玩城、电玩、游戏厅、室内游乐场、玩乐团购</td><td>低预算/低出价，只负责补入口流量</td><td>CTR < 4% 或 2天无订单即降权</td></tr>
+<tr><td>成交精准组</td><td>主机游戏、PS5双人包间、Switch游戏馆、双人成行、新街口电玩</td><td>优先预算，承接双人包间和约会/聚会场景</td><td>CPO < ¥35 可加量，CPO > ¥40 查词</td></tr>
+<tr><td>观察测试组</td><td>抓娃娃、桌游、游戏机、朋友聚会、室内约会</td><td>小预算测试新场景，不作为主消耗</td><td>每2天复盘订单和商户浏览</td></tr>
+<tr><td>品牌防守组</td><td>超能玩家、文化大厦电玩、新街口PS5</td><td>低价承接明确找店用户</td><td>保证排名和可见性，不追求大量消耗</td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+
+        <article class="insight-module">
+    <div class="module-head">
+      <span>店铺页热区 + 商品 + 评价咨询</span>
+      <h3>承接页与商品货架</h3>
+    </div>
+    <ol class="module-summary"><li>商品模块点击率 36.99% 不差，但意向转化偏低，说明用户会看套餐却仍不确定。</li><li>头图/相册/视频点击率 0.43%，应把包间实拍、热门游戏、路线预约放到前 3 张。</li><li>近7天新增评价 未返回/待补充 条、新差评 未返回/待补充 条，评价增长要从自然等待改为核销后 SOP。</li></ol>
+    <div class="viz-grid focus">
+            <article class="chart-card">
+    <header>
+      <div>
+        <span>近30天模块点击率</span>
+        <h3>店铺页热区对比</h3>
+      </div>
+    </header>
+    <div class="page-heat-panel" role="img" aria-label="店铺页热区点击率">
+    <div class="page-heat-highlights">
+      <div class="heat-highlight-card is-good">
+          <span>强项</span>
+          <strong>商品 36.99%</strong>
+          <em>点击 1,887 · 同行 28.56%</em>
+        </div><div class="heat-highlight-card is-good">
+          <span>强项</span>
+          <strong>地址 9.74%</strong>
+          <em>点击 497 · 同行 9.31%</em>
+        </div><div class="heat-highlight-card is-risk">
+          <span>明显偏低</span>
+          <strong>头图/相册/视频 0.43%</strong>
+          <em>点击 22 · 同行 3.58%</em>
+        </div>
+    </div>
+    <div class="heat-module-list">
+      <div class="heat-module-row is-warn">
+          <div class="heat-name">
+            <strong>分享收藏</strong>
+            <span>点击 134</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:4.2%"></b>
+            <i style="left:7.4%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 2.63%</b>
+            <span>同行 4.61% / 优秀 15.74%</span>
+          </div>
+        </div><div class="heat-module-row is-risk">
+          <div class="heat-name">
+            <strong>头图/相册/视频</strong>
+            <span>点击 22</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:0.7%"></b>
+            <i style="left:5.7%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 0.43%</b>
+            <span>同行 3.58% / 优秀 14.88%</span>
+          </div>
+        </div><div class="heat-module-row is-risk">
+          <div class="heat-name">
+            <strong>门店信息</strong>
+            <span>点击 39</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:1.2%"></b>
+            <i style="left:7.0%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 0.76%</b>
+            <span>同行 4.35% / 优秀 17.23%</span>
+          </div>
+        </div><div class="heat-module-row is-warn">
+          <div class="heat-name">
+            <strong>电话</strong>
+            <span>点击 213</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:6.7%"></b>
+            <i style="left:9.6%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 4.17%</b>
+            <span>同行 5.98% / 优秀 20.80%</span>
+          </div>
+        </div><div class="heat-module-row is-good">
+          <div class="heat-name">
+            <strong>地址</strong>
+            <span>点击 497</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:15.6%"></b>
+            <i style="left:14.9%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 9.74%</b>
+            <span>同行 9.31% / 优秀 28.94%</span>
+          </div>
+        </div><div class="heat-module-row is-good">
+          <div class="heat-name">
+            <strong>商品</strong>
+            <span>点击 1,887</span>
+          </div>
+          <div class="heat-track">
+            <b style="width:59.3%"></b>
+            <i style="left:45.8%"></i>
+          </div>
+          <div class="heat-values">
+            <b>本店 36.99%</b>
+            <span>同行 28.56% / 优秀 62.40%</span>
+          </div>
+        </div>
+    </div>
+  </div>
+    <p class="chart-note">商品点击强，但头图、评价、门店信息低于同行，首屏信任需要补齐。</p>
+  </article>
+          </div>
+    <details>
+      <summary>查看数据明细与证据表</summary>
+      <div class="detail-body">
+            <h4>店铺页热区</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>模块</th><th>点击</th><th>点击率</th><th>同行均值</th><th>优秀值</th><th>判断</th></tr></thead>
+    <tbody><tr><td>分享收藏</td><td>134</td><td>2.63%</td><td>4.61%</td><td>15.74%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>头图/相册/视频</td><td>22</td><td>0.43%</td><td>3.58%</td><td>14.88%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>门店信息</td><td>39</td><td>0.76%</td><td>4.35%</td><td>17.23%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>电话</td><td>213</td><td>4.17%</td><td>5.98%</td><td>20.80%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>地址</td><td>497</td><td>9.74%</td><td>9.31%</td><td>28.94%</td><td><span class="tag good">高于均值</span></td></tr>
+<tr><td>商品</td><td>1,887</td><td>36.99%</td><td>28.56%</td><td>62.40%</td><td><span class="tag good">高于均值</span></td></tr>
+<tr><td>用户评价</td><td>214</td><td>4.19%</td><td>7.77%</td><td>27.37%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>来过/问答/写攻略</td><td>35</td><td>0.69%</td><td>4.54%</td><td>23.30%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>打卡</td><td>3</td><td>0.06%</td><td>3.71%</td><td>20.54%</td><td><span class="tag bad">低于均值</span></td></tr>
+<tr><td>在线咨询</td><td>71</td><td>1.39%</td><td>2.51%</td><td>13.79%</td><td><span class="tag bad">低于均值</span></td></tr></tbody>
+  </table></div>
+            <h4>流量来源与承接</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>来源</th><th>UV</th><th>UV占比</th><th>订单</th><th>下单率</th><th>平均停留</th></tr></thead>
+    <tbody><tr><td>搜索</td><td>3,369</td><td>64.12%</td><td>269</td><td>7.98%</td><td>9秒</td></tr>
+<tr><td>行业频道</td><td>1,092</td><td>20.78%</td><td>54</td><td>4.95%</td><td>9秒</td></tr>
+<tr><td>其他</td><td>508</td><td>9.67%</td><td>33</td><td>6.50%</td><td>9秒</td></tr>
+<tr><td>收藏/咨询/购物车</td><td>170</td><td>3.24%</td><td>20</td><td>11.76%</td><td>9秒</td></tr>
+<tr><td>精选内容推荐</td><td>115</td><td>2.19%</td><td>6</td><td>5.22%</td><td>10秒</td></tr></tbody>
+  </table></div>
+            <h4>商品货架建议</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>套餐层级</th><th>建议命名</th><th>解决的问题</th><th>注意事项</th></tr></thead>
+    <tbody><tr><td>体验券</td><td>【新客试玩】双人独立包间 1 小时</td><td>解决“先试试”的低门槛需求</td><td>不要做首屏主推，避免拉低客单</td></tr>
+<tr><td>主爆品</td><td>【约会/朋友局主推】PS5/Switch 双人包间 2 小时</td><td>承接最大成交面，绑定双人成行、胡闹厨房、马里奥等游戏</td><td>首屏、投放词、评价都围绕它展开</td></tr>
+<tr><td>延长时长</td><td>【不赶时间】双人包间 3 小时</td><td>给已经有兴趣的用户做加购</td><td>套餐详情写清楚适合哪些游戏和是否可续时</td></tr>
+<tr><td>多人高客单</td><td>【生日/聚会】2-4 人大包间 3 小时双主机</td><td>提升客单价和朋友聚会标签</td><td>增加场景图，不只写“2-4人/3小时”</td></tr>
+<tr><td>工作日填谷</td><td>【工作日下午】双人包间错峰券</td><td>提高低峰时段利用率</td><td>只在低峰做，不和周末主爆品互相打架</td></tr></tbody>
+  </table></div>
+            <h4>当前前台商品观察</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>商品</th><th>价格</th><th>年售</th><th>建议</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+            <h4>阈值触发规则</h4>
+            <div class="table-scroll"><table class="compact">
+    <thead><tr><th>指标</th><th>当前基线</th><th>触发条件</th><th>动作</th></tr></thead>
+    <tbody><tr><td>曝光访问率</td><td>7.49% 基线</td><td>连续2天 < 8%</td><td>换首图、标题、榜单背书；检查搜索词是否偏泛。</td></tr>
+<tr><td>意向转化率</td><td>7.91% 基线</td><td>连续2天 < 7%</td><td>改套餐命名、价格锚点、预约说明；把双人主爆品前置。</td></tr>
+<tr><td>广告 CTR</td><td>4.49% 基线</td><td>< 4.2%</td><td>降泛词出价；替换计划图文和卖点。</td></tr>
+<tr><td>广告 CPO</td><td>¥32.86 基线</td><td>> ¥40</td><td>查高花费无订单词；减少抓娃娃/桌游等偏离词。</td></tr>
+<tr><td>咨询点击率</td><td>1.39% 基线</td><td>< 1%</td><td>首屏补“可预约/怎么走/热门时段”说明。</td></tr>
+<tr><td>评价新增</td><td>2 条/7天</td><td>< 10条/7天</td><td>核销后30分钟评价提醒；前台每日复盘。</td></tr></tbody>
+  </table></div>
+          </div>
+    </details>
+  </article>
+      </div>
+    </section>
+
+    <section id="appendix">
+      <div class="section-title">
+        <h2>数据附录</h2>
+        <small>所有补充口径、缺失治理、文案素材和原始数据说明集中放在这里。</small>
+      </div>
+      <details open>
+        <summary>指标口径总表</summary>
+        <div class="detail-body">
+          <p style="margin-bottom:14px">每个关键指标均标注周期口径、来源、决策用途和缺失状态，防止把当天未完整数据、近14天竞对识别或空值误读成 7/30/90 趋势。</p>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>指标名</th><th>周期口径</th><th>当前值</th><th>对比值</th><th>来源</th><th>决策用途</th><th>缺失状态</th></tr></thead>
+    <tbody><tr><td>曝光访问率</td><td>近30天经营漏斗</td><td>7.49%</td><td>同行 8.06% / 优秀 19.44%</td><td>经营参谋-客流分析</td><td>判断首图、标题和曝光质量是否能拉人进店</td><td>完整</td></tr>
+<tr><td>意向转化率</td><td>近30天经营漏斗</td><td>7.91%</td><td>同行 16.63% / 优秀 32.67%</td><td>经营参谋-客流分析</td><td>判断套餐、预约和页面信任是否能促成下单</td><td>完整</td></tr>
+<tr><td>广告 CPO</td><td>近30天推广中心</td><td>¥32.86</td><td>无同行返回，目标 ¥38 内</td><td>推广中心-推广分析</td><td>决定是否控预算、清词、加量</td><td>完整</td></tr>
+<tr><td>广告 CTR</td><td>近30天推广中心</td><td>4.49%</td><td>CPC ¥1.86</td><td>推广中心-推广分析</td><td>判断素材和关键词点击效率</td><td>完整</td></tr>
+<tr><td>昨日运营快照</td><td>2026-05-19 完整日</td><td>访问 未返回/待补充 / 下单 未返回/待补充</td><td>曝光访问率 未返回/待补充</td><td>经营参谋-后台实时昨日完整日</td><td>只看已完整沉淀的前一天单日状态</td><td>完整日快照</td></tr>
+<tr><td>推广账户配置</td><td>当前计划配置，非效果数据</td><td>日预算配置 ¥200.00</td><td>在线计划 1 / 暂停 1</td><td>推广中心-账户/计划</td><td>确认计划和单元是否可投，不判断昨日消耗</td><td>缺昨日消耗</td></tr>
+<tr><td>昨日推广花费</td><td>2026-05-19 完整日</td><td>未返回/待补充</td><td>推广中心未返回昨日计划级消耗</td><td>推广中心-账户/计划</td><td>不能用当天未完整消耗替代昨日花费</td><td>缺失</td></tr>
+<tr><td>潜在顾客流失</td><td>近30天客流去向</td><td>574 / 4,626</td><td>同类竞对截流</td><td>经营参谋-客流分析</td><td>决定是否做二次承接和竞对防守</td><td>完整</td></tr>
+<tr><td>竞对识别</td><td>后台固定近14天客户流失情况</td><td>23 个高流失竞对</td><td>WASD· 电玩無双Ps5·Switch主机游戏馆（新街口店）</td><td>经营参谋-竞对识别</td><td>识别小熊、WASD等防守对象</td><td>非标准周期</td></tr>
+<tr><td>门店竞争力</td><td>近30天南京市同类</td><td>S / 98</td><td>共分析了21个指标,其中11项存在问题，建议优化个改进</td><td>经营参谋-门店竞争力</td><td>判断基本盘强弱和弱项</td><td>完整</td></tr>
+<tr><td>搜索洞察</td><td>近7天/近30天</td><td>近30天 804 条</td><td>近7天 616 条</td><td>经营参谋-市场洞察-搜索</td><td>决定关键词归并和投放词包</td><td>缺90天</td></tr>
+<tr><td>客群画像</td><td>近30天/近90天</td><td>近30天 82,125 人</td><td>近90天 238,067 人</td><td>经营参谋-市场洞察-客群</td><td>决定素材场景和套餐表达</td><td>完整</td></tr>
+<tr><td>差评回复率</td><td>门店竞争力弱项字段</td><td>未返回/待补充</td><td>归一化字段为空</td><td>经营参谋-门店竞争力</td><td>避免把空值误判成 0%</td><td>缺失</td></tr>
+<tr><td>ROI/核销金额</td><td>推广中心</td><td>未返回/待补充</td><td>未返回核销金额</td><td>推广中心</td><td>不能直接给 ROI 绝对结论</td><td>缺失</td></tr></tbody>
+  </table></div>
+        </div>
+      </details>
+      <details>
+        <summary>非标准周期但纳入诊断的指标</summary>
+        <div class="detail-body">
+          <div class="note">7/30/90 天作为主趋势线，但不作为纳入数据的硬性门槛。凡是能解释门店运营问题、竞对流失、转化阻力、投放效率或用户画像的指标，即使周期不是 7/30/90，也纳入诊断，并在报告中标注口径。</div>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>模块</th><th>周期/口径</th><th>为什么重要</th><th>如何使用</th></tr></thead>
+    <tbody><tr><td>竞对识别</td><td>后台页面固定近14天客户流失情况</td><td>这是判断用户流失到哪些同类门店、优先防守哪些竞对的核心依据。</td><td>纳入竞对洞察和竞对防守动作，但不解释为 7/30/90 趋势。</td></tr>
+<tr><td>门店竞争力</td><td>后台返回近30天南京市同类竞争力</td><td>能区分“基本盘弱”还是“局部转化漏水”。</td><td>纳入总体状态判断、弱项定位和管理优先级。</td></tr>
+<tr><td>推广账户状态</td><td>当前计划配置、在线计划状态；不使用当天未完整消耗</td><td>计划和单元状态影响后续投放动作，但当天消耗不完整，不能作为经营效果判断。</td><td>纳入推广诊断用于确认可投状态；预算效果判断仍以7/30/90和昨日完整日为主。</td></tr>
+<tr><td>前台观察数据</td><td>当前可见评分、评价、竞对人均、套餐年售</td><td>这些是用户实际决策时看到的信息，决定首屏信任和价格感知。</td><td>纳入竞对压力、价格判断、套餐策略和评价 SOP。</td></tr>
+<tr><td>搜索洞察</td><td>后台仅提供近7天和近30天</td><td>关键词是投放和自然搜索承接的直接依据，不能因缺 90 天而排除。</td><td>纳入关键词分组和内容承接，标注缺少 90 天表格。</td></tr>
+<tr><td>客群画像</td><td>后台提供近30天和近90天</td><td>用于判断女性、30+、亲子/购物等场景是否应进入素材和套餐。</td><td>纳入市场洞察和场景扩展建议。</td></tr>
+<tr><td>商品洞察与商圈热区</td><td>接口成功但返回空明细</td><td>空结果本身也是数据质量信息，能防止臆造市场爆品或商圈排名。</td><td>纳入口径说明，明确不据此推断具体热卖商品或商圈排名。</td></tr></tbody>
+  </table></div>
+        </div>
+      </details>
+      <details>
+        <summary>空值治理与数据缺口</summary>
+        <div class="detail-body">
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>指标/模块</th><th>后台返回情况</th><th>页面显示</th><th>处理原则</th></tr></thead>
+    <tbody><tr><td>差评回复率</td><td>门店竞争力弱项表返回 0.00%，但归一化字段 badReviewReplyRate 为 null</td><td>未返回/待补充</td><td>不得按 0% 解释；用近7天新差评0、评分4.8、投诉扣分0做辅助判断。</td></tr>
+<tr><td>推广 ROI/核销金额</td><td>推广中心未返回核销金额、ROI 和昨日计划级消耗</td><td>未返回/待补充</td><td>用 7/30/90 的 CPO、CTR、广告订单做代理，不用当天未完整预算利用率下结论。</td></tr>
+<tr><td>搜索90天</td><td>搜索洞察仅支持近7天/近30天</td><td>未返回/待补充</td><td>关键词动作用 7/30 天，趋势结论不硬推 90 天。</td></tr>
+<tr><td>商品洞察明细</td><td>接口成功但表格为空</td><td>未返回/待补充</td><td>不臆造市场爆品，只依据本店套餐和竞对流失改货架。</td></tr>
+<tr><td>商圈热区明细</td><td>接口成功但无商圈明细</td><td>未返回/待补充</td><td>不对具体商圈排名做结论，仅保留新街口场景承接。</td></tr></tbody>
+  </table></div>
+          <h4>模块级缺口</h4>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>模块</th><th>返回结果</th><th>缺口</th><th>处理方式</th></tr></thead>
+    <tbody><tr><td>搜索洞察</td><td>近7天 616 条 / 近30天 804 条</td><td>后台页面未提供近90天搜索词表</td><td>用 7/30 天做关键词动作，不硬推 90 天结论。</td></tr>
+<tr><td>客群洞察</td><td>近30天 82,125 人 / 近90天 238,067 人</td><td>可读</td><td>用 30/90 天画像确定套餐和素材场景。</td></tr>
+<tr><td>商品洞察</td><td>无明细 / 无明细</td><td>接口成功但表格为空</td><td>不臆造全城热卖商品，只基于本店套餐和竞对流失做策略。</td></tr>
+<tr><td>商圈热区</td><td>无明细（暂无数据） / 无明细（暂无数据）</td><td>接口成功但无商圈明细</td><td>不能对具体商圈排名下结论，保留“新街口”搜索场景承接。</td></tr></tbody>
+  </table></div>
+          <h4>数据质量</h4>
+          <div class="table-scroll"><table class="compact">
+    <thead><tr><th>数据模块</th><th>周期/范围</th><th>质量判断</th><th>本报告使用方式</th></tr></thead>
+    <tbody><tr><td>经营漏斗</td><td>7/30/90 天</td><td>完整可用</td><td>作为主诊断口径</td></tr>
+<tr><td>推广数据</td><td>7/30/90 天</td><td>缺核销金额/ROI</td><td>使用 CPO、CTR、订单作为效率代理</td></tr>
+<tr><td>竞对识别</td><td>后台固定近14天</td><td>可用但非趋势</td><td>用于判断当前流失结构</td></tr>
+<tr><td>搜索洞察</td><td>7/30 天</td><td>无90天表格</td><td>用于关键词分组和内容承接</td></tr>
+<tr><td>客群画像</td><td>30/90 天</td><td>可用</td><td>用于人群和场景表达</td></tr>
+<tr><td>商品/商圈洞察</td><td>接口成功</td><td>明细为空</td><td>不据此编造市场爆品和商圈排名</td></tr></tbody>
+  </table></div>
+        </div>
+      </details>
+      <details>
+        <summary>执行素材包：可直接使用的文案</summary>
+        <div class="detail-body">
+          <p style="margin-bottom:14px">这些文案从正式诊断叙事中移出，仅作为落地执行素材。</p>
+          <div class="copy-grid"><div class="copy-card">
+      <header><span>首图文案</span><button class="copy-btn" type="button" data-copy="新街口独立包间电玩｜PS5 + Switch｜双人成行 / 胡闹厨房 / 马里奥｜情侣约会、朋友聚会都能玩">复制</button></header>
+      <p>新街口独立包间电玩｜PS5 + Switch｜双人成行 / 胡闹厨房 / 马里奥｜情侣约会、朋友聚会都能玩</p>
+    </div><div class="copy-card">
+      <header><span>套餐详情第一段</span><button class="copy-btn" type="button" data-copy="适合 2 人约会或朋友局，包间私密不吵，PS5/Switch 可选。热门时段建议提前电话或在线咨询预约，到店报姓名即可安排。">复制</button></header>
+      <p>适合 2 人约会或朋友局，包间私密不吵，PS5/Switch 可选。热门时段建议提前电话或在线咨询预约，到店报姓名即可安排。</p>
+    </div><div class="copy-card">
+      <header><span>路线说明</span><button class="copy-btn" type="button" data-copy="到文化大厦后走主入口电梯上楼；如找不到入口，直接点电话/在线咨询，我们发定位图。周末电梯可能排队，建议提前 10 分钟到。">复制</button></header>
+      <p>到文化大厦后走主入口电梯上楼；如找不到入口，直接点电话/在线咨询，我们发定位图。周末电梯可能排队，建议提前 10 分钟到。</p>
+    </div><div class="copy-card">
+      <header><span>客服首句</span><button class="copy-btn" type="button" data-copy="您好，可以帮您先留包间。请问几个人、想玩 PS5 还是 Switch、预计几点到？如果不确定套餐，我按人数和时长给您推荐最划算的。">复制</button></header>
+      <p>您好，可以帮您先留包间。请问几个人、想玩 PS5 还是 Switch、预计几点到？如果不确定套餐，我按人数和时长给您推荐最划算的。</p>
+    </div><div class="copy-card">
+      <header><span>评价提醒</span><button class="copy-btn" type="button" data-copy="本次体验顺利的话，麻烦您在美团给个真实评价，重点写环境、服务、包间和游戏体验都可以。下次来我给您优先安排熟悉的包间。">复制</button></header>
+      <p>本次体验顺利的话，麻烦您在美团给个真实评价，重点写环境、服务、包间和游戏体验都可以。下次来我给您优先安排熟悉的包间。</p>
+    </div></div>
+        </div>
+      </details>
+      <details>
+        <summary>数据文件与只读边界</summary>
+        <div class="detail-body grid two">
+          <div class="card">
+            <h3>已使用数据</h3>
+            <p>经营参谋：客流分析、流量来源、店铺页热区、商品分析、推广分析、报表中心、竞对门店、竞对识别、门店竞争力、搜索洞察、客群洞察、商品洞察、商圈热区。推广中心：账户概览、计划列表、计划详情、推广报表、推荐关键词。</p>
+          </div>
+          <div class="card">
+            <h3>文件位置</h3>
+            <p>归一化数据文件：<code>normalized-data.json</code>。原始接口目录：<code>raw-api/2026-05-20T07-18-55-191Z</code>、<code>raw-api/2026-05-20T07-19-25-497Z</code>、<code>raw-api/2026-05-18T15-27-18-682Z</code>、<code>raw-api/2026-05-18T15-26-35-459Z</code>。</p>
+            <p style="margin-top:10px">搜索与团购补充执行包：<code>trade-analysis-last30-2026-05-16</code>，包含手机端搜索词、网页端搜索/客群/商品洞察和第一批团购标题工单。</p>
+            <p style="margin-top:10px">本次未修改后台设置、未调整预算、未发送消息、未提交表单。</p>
+          </div>
+        </div>
+      </details>
+    </section>
+    
+  </main>
+
+  <footer class="wrap">
+    生成时间：2026-05-21。报告以后台截至 2026-05-19 的 7/30/90 天闭环数据为主；当天未完整数据不纳入经营判断。
+  </footer>
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const text = button.getAttribute('data-copy') || '';
+        try {
+          await navigator.clipboard.writeText(text);
+          button.textContent = '已复制';
+          setTimeout(() => { button.textContent = '复制'; }, 1200);
+        } catch {
+          button.textContent = '手动复制';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
